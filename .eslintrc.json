@@ -1,8 +1,7 @@
 {
-  "root": true,
   "env": {
     "browser": true,
-    "es6": true
+    "es2021": true
   },
   "extends": [
     "react-app",
@@ -21,7 +20,7 @@
     "ecmaFeatures": {
       "jsx": true
     },
-    "ecmaVersion": 2020,
+    "ecmaVersion": 12,
     "sourceType": "module"
   },
   "plugins": ["react", "@typescript-eslint"],
