@@ -3,6 +3,7 @@ import Box from '@mui/material/Box'
 import Paper from '@mui/material/Paper'
 
 import Line from 'features/drawing/components/Line'
+import Svg from 'utils/components/Svg'
 
 const Canvas = () => {
   const [start, setStart] = React.useState({
@@ -28,10 +29,10 @@ const Canvas = () => {
       ...prev,
       <Line
         key={`item-${prev.length + 1}`}
-        x1={(start.x / 500) * 24}
-        y1={(start.y / 500) * 24}
-        x2={(clientX / 500) * 24}
-        y2={(clientY / 500) * 24}
+        x1={(start.x / 500) * 100}
+        y1={(start.y / 500) * 100}
+        x2={(clientX / 500) * 100}
+        y2={(clientY / 500) * 100}
       />,
     ])
   }
@@ -46,7 +47,9 @@ const Canvas = () => {
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         sx={{ width: '500px', height: '500px', aspectRatio: '1:1' }}>
-        <>{items}</>
+        <Svg height={500} width={500}>
+          {items}
+        </Svg>
       </Paper>
     </Box>
   )

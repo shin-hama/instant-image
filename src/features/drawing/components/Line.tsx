@@ -1,7 +1,5 @@
 import * as React from 'react'
-// import Svg from './Svg'
-
-const viewBox = 24
+import Svg from 'utils/components/Svg'
 
 type Props = {
   x1: number
@@ -11,16 +9,9 @@ type Props = {
 }
 const Line: React.FC<Props> = (props) => {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={500}
-      height={500}
-      viewBox={`0 0 ${viewBox} ${viewBox}`}
-      fill="none"
-      stroke={'#000'}
-      strokeWidth="2">
-      <line {...props} />
-    </svg>
+    <Svg>
+      <line {...props} fill="none" stroke={'#000'} strokeWidth="2" />
+    </Svg>
   )
 }
 
