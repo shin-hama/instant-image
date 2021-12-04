@@ -1,0 +1,15 @@
+# vscode
+.vscode/*
+.devcontainer/*
+
+# node
+package.json
+package-lock.json
+build/*
+public/*
+
+# jest
+coverage/*
+
+# github
+.github/*
