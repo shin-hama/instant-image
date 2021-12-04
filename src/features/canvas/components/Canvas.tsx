@@ -10,29 +10,23 @@ const Canvas = () => {
     x: 0,
     y: 0,
   })
-  const [end, setEnd] = React.useState({
-    x: 0,
-    y: 0,
-  })
   const [items, setItems] = React.useState<React.ReactNode[]>([])
   const handleMouseDown = (event: React.MouseEvent) => {
-    console.log(event)
     const { clientX, clientY } = event
     setStart({ x: clientX, y: clientY })
   }
   const handleMouseUp = (event: React.MouseEvent) => {
-    console.log(end)
     const { clientX, clientY } = event
-    console.log(clientX, clientY)
-    setEnd({ x: clientX, y: clientY })
+    const { left, top } = event.currentTarget.getBoundingClientRect()
+    setStart({ x: 0, y: 0 })
     setItems((prev) => [
       ...prev,
       <Line
         key={`item-${prev.length + 1}`}
-        x1={(start.x / 500) * 100}
-        y1={(start.y / 500) * 100}
-        x2={(clientX / 500) * 100}
-        y2={(clientY / 500) * 100}
+        x1={((start.x - left) / 500) * 100}
+        y1={((start.y - top) / 500) * 100}
+        x2={((clientX - left) / 500) * 100}
+        y2={((clientY - top) / 500) * 100}
       />,
     ])
   }
@@ -42,11 +36,12 @@ const Canvas = () => {
   }, [items])
 
   return (
-    <Box>
+    <Box p={20}>
       <Paper
+        id="test"
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
-        sx={{ width: '500px', height: '500px', aspectRatio: '1:1' }}>
+        sx={{ width: '500px', height: '500px' }}>
         <Svg height={500} width={500}>
           {items}
         </Svg>
