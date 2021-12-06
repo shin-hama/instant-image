@@ -2,7 +2,8 @@ import * as React from 'react'
 import Box from '@mui/material/Box'
 import Paper from '@mui/material/Paper'
 
-import Line from 'features/drawing/components/Line'
+// import Line from 'features/drawing/components/Line'
+import Rect from 'features/drawing/components/Rect'
 import Svg from 'utils/components/Svg'
 
 const Canvas = () => {
@@ -21,12 +22,19 @@ const Canvas = () => {
     setStart({ x: 0, y: 0 })
     setItems((prev) => [
       ...prev,
-      <Line
+      // <Line
+      //   key={`item-${prev.length + 1}`}
+      //   x1={((start.x - left) / 500) * 100}
+      //   y1={((start.y - top) / 500) * 100}
+      //   x2={((clientX - left) / 500) * 100}
+      //   y2={((clientY - top) / 500) * 100}
+      // />,
+      <Rect
         key={`item-${prev.length + 1}`}
-        x1={((start.x - left) / 500) * 100}
-        y1={((start.y - top) / 500) * 100}
-        x2={((clientX - left) / 500) * 100}
-        y2={((clientY - top) / 500) * 100}
+        x={((start.x - left) / 500) * 100}
+        y={((start.y - top) / 500) * 100}
+        width={((clientX - start.x) / 500) * 100}
+        height={((clientY - start.y) / 500) * 100}
       />,
     ])
   }

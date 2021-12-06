@@ -1,8 +1,9 @@
 import * as React from 'react'
-import Canvas from 'features/canvas/components/Canvas'
+
+import Route from 'pages/route'
 
 function App() {
-  return <Canvas />
+  return <Route />
 }
 
 export default App
