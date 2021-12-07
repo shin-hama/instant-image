@@ -27,6 +27,7 @@ const Navbar = () => {
             onChange={handleChange}>
             <MenuItem value={'Line'}>Line</MenuItem>
             <MenuItem value={'Rect'}>Rect</MenuItem>
+            <MenuItem value={'Circle'}>Circle</MenuItem>
           </Select>
         </FormControl>
       </Toolbar>
