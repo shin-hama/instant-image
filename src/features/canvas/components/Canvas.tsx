@@ -7,6 +7,7 @@ import Rect from 'features/drawing/components/Rect'
 import Svg from 'utils/components/Svg'
 
 import { ShapeTypeContext } from 'pages/Root'
+import Circle from 'features/drawing/components/Circle'
 
 type Point = {
   x: number
@@ -15,6 +16,24 @@ type Point = {
 
 const CreateShape = (shape: string, p1: Point, p2: Point, origin: Point) => {
   switch (shape) {
+    case 'Circle': {
+      const center = {
+        x: (p1.x + p2.x) / 2,
+        y: (p1.y + p2.y) / 2,
+      }
+      const radius = {
+        x: Math.abs(p1.x - p2.x) / 2,
+        y: Math.abs(p1.y - p2.y) / 2,
+      }
+      return (
+        <Circle
+          cx={((center.x - origin.x) / 500) * 100}
+          cy={((center.y - origin.y) / 500) * 100}
+          rx={(radius.x / 500) * 100}
+          ry={(radius.y / 500) * 100}
+        />
+      )
+    }
     case 'Rect': {
       const leftTop: Point = {
         x: Math.min(p1.x, p2.x),
@@ -24,7 +43,6 @@ const CreateShape = (shape: string, p1: Point, p2: Point, origin: Point) => {
         x: Math.abs(p1.x - p2.x),
         y: Math.abs(p1.y - p2.y),
       }
-      console.log(widthHeight)
       return (
         <Rect
           x={((leftTop.x - origin.x) / 500) * 100}
@@ -66,14 +84,14 @@ const Canvas = () => {
     const end = { x: clientX, y: clientY }
     const canvasOrigin = { x: left, y: top }
     setStart({ x: 0, y: 0 })
-    setItems((prev) => [
-      ...prev,
-      CreateShape(shapeType, start, end, canvasOrigin),
-    ])
+    const shape = CreateShape(shapeType, start, end, canvasOrigin)
+    if (shape) {
+      setItems((prev) => [...prev, shape])
+    }
   }
 
   React.useEffect(() => {
-    console.log(items)
+    console.log(React.Children.toArray(items))
   }, [items])
 
   return (
@@ -84,7 +102,7 @@ const Canvas = () => {
         onMouseUp={handleMouseUp}
         sx={{ width: '500px', height: '500px' }}>
         <Svg height={500} width={500}>
-          {items}
+          {React.Children.toArray(items)}
         </Svg>
       </Paper>
     </Box>
