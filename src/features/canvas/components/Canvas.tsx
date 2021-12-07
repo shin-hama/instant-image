@@ -66,7 +66,10 @@ const CreateShape = (shape: string, p1: Point, p2: Point, origin: Point) => {
   }
 }
 
-const Canvas = () => {
+type Props = {
+  pasteData?: string | File
+}
+const Canvas: React.FC<Props> = ({ pasteData }) => {
   const [start, setStart] = React.useState<Point>({
     x: 0,
     y: 0,
@@ -91,8 +94,10 @@ const Canvas = () => {
   }
 
   React.useEffect(() => {
-    console.log(React.Children.toArray(items))
-  }, [items])
+    if (pasteData) {
+      console.log(pasteData)
+    }
+  }, [pasteData])
 
   return (
     <Box p={20}>
