@@ -1,9 +1,9 @@
 import * as React from 'react'
 
-import Route from 'pages/route'
+import Root from 'pages/Root'
 
 function App() {
-  return <Route />
+  return <Root />
 }
 
 export default App

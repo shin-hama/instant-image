@@ -6,10 +6,12 @@ import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import Toolbar from '@mui/material/Toolbar'
 
+import { ShapeTypeContext } from 'pages/Root'
+
 const Navbar = () => {
-  const [shape, setShape] = React.useState('Line')
+  const { shapeType, setShapeType } = React.useContext(ShapeTypeContext)
   const handleChange = (event: SelectChangeEvent) => {
-    setShape(event.target.value)
+    setShapeType(event.target.value)
   }
 
   return (
@@ -20,7 +22,7 @@ const Navbar = () => {
           <Select
             labelId="shape-select-label"
             id="shape-select"
-            value={shape}
+            value={shapeType}
             label="Shape"
             onChange={handleChange}>
             <MenuItem value={'Line'}>Line</MenuItem>
