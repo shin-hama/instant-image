@@ -2,12 +2,13 @@ import * as React from 'react'
 import Box from '@mui/material/Box'
 import Paper from '@mui/material/Paper'
 
+import SvgImage from 'features/drawing/components/Image'
 import Line from 'features/drawing/components/Line'
 import Rect from 'features/drawing/components/Rect'
+import Circle from 'features/drawing/components/Circle'
 import Svg from 'utils/components/Svg'
 
 import { ShapeTypeContext } from 'pages/Root'
-import Circle from 'features/drawing/components/Circle'
 
 type Point = {
   x: number
@@ -66,6 +67,35 @@ const CreateShape = (shape: string, p1: Point, p2: Point, origin: Point) => {
   }
 }
 
+const PasteObject = async (data: string | File, origin: Point) => {
+  if (data instanceof File && data.type.startsWith('image')) {
+    console.log(data)
+    const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const reader = new FileReader()
+
+      reader.onload = () => {
+        const img = new Image()
+        img.onload = () => {
+          resolve(img)
+        }
+        img.src = reader.result?.toString() || ''
+      }
+      reader.onerror = (error) => reject(error)
+      reader.readAsDataURL(data)
+    })
+
+    return (
+      <SvgImage
+        x={0}
+        y={0}
+        width={(image.width / 500) * 100}
+        height={(image.height / 500) * 100}
+        xlinkHref={image.src}
+      />
+    )
+  }
+}
+
 type Props = {
   pasteData?: string | File
 }
@@ -76,6 +106,7 @@ const Canvas: React.FC<Props> = ({ pasteData }) => {
   })
   const [items, setItems] = React.useState<React.ReactNode[]>([])
   const { shapeType } = React.useContext(ShapeTypeContext)
+  const canvasRef = React.useRef<HTMLDivElement>(null)
 
   const handleMouseDown = (event: React.MouseEvent) => {
     const { clientX, clientY } = event
@@ -94,14 +125,22 @@ const Canvas: React.FC<Props> = ({ pasteData }) => {
   }
 
   React.useEffect(() => {
-    if (pasteData) {
-      console.log(pasteData)
+    if (pasteData !== undefined && canvasRef.current !== null) {
+      const { left, top } = canvasRef.current?.getBoundingClientRect()
+      const canvasOrigin = { x: left, y: top }
+      const func = async () => {
+        const obj = await PasteObject(pasteData, canvasOrigin)
+        console.log(obj)
+        setItems((prev) => [...prev, obj])
+      }
+      func()
     }
   }, [pasteData])
 
   return (
     <Box p={20}>
       <Paper
+        ref={canvasRef}
         id="test"
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
