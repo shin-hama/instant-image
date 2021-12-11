@@ -17,11 +17,21 @@ export const ShapeTypeContext = React.createContext<ShapeTypeProps>({
 
 const Root = () => {
   const [shapeType, setShapeType] = React.useState('Line')
+  const [pasteData, setPasteData] = React.useState<string | File>()
+  const handlePaste = (e: React.ClipboardEvent) => {
+    if (e.clipboardData.files.length > 0) {
+      const file = e.clipboardData.files[0]
+      setPasteData(file)
+    } else {
+      setPasteData(e.clipboardData.getData('Text'))
+    }
+  }
+
   return (
-    <Box>
+    <Box onPaste={handlePaste}>
       <ShapeTypeContext.Provider value={{ shapeType, setShapeType }}>
         <Navbar />
-        <Canvas />
+        <Canvas pasteData={pasteData} />
       </ShapeTypeContext.Provider>
     </Box>
   )
