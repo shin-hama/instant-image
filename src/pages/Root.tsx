@@ -31,7 +31,9 @@ const Root = () => {
     <Box onPaste={handlePaste}>
       <ShapeTypeContext.Provider value={{ shapeType, setShapeType }}>
         <Navbar />
-        <Canvas />
+        <Box sx={{ margin: 10, border: 'black' }}>
+          <Canvas />
+        </Box>
       </ShapeTypeContext.Provider>
     </Box>
   )
