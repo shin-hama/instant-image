@@ -1,5 +1,12 @@
 import * as React from 'react'
-import { Stage, Layer, Rect, Line, Ellipse } from 'react-konva'
+import {
+  Stage,
+  Layer,
+  Rect,
+  Line,
+  Ellipse,
+  Image as KonvaImage,
+} from 'react-konva'
 import Konva from 'konva'
 
 import { ShapeTypeContext } from 'pages/Root'
@@ -55,7 +62,52 @@ const CreateShape = (shape: string, p1: Konva.Vector2d, p2: Konva.Vector2d) => {
   }
 }
 
-export const Canvas = () => {
+const PasteObject = async (data: string | File) => {
+  if (data instanceof File && data.type.startsWith('image')) {
+    const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const reader = new FileReader()
+
+      reader.onload = () => {
+        const img = new Image()
+        img.onload = () => {
+          resolve(img)
+        }
+        img.src = reader.result?.toString() || ''
+      }
+      reader.onerror = (error) => reject(error)
+      reader.readAsDataURL(data)
+    })
+
+    const size = {
+      width: image.width,
+      height: image.height,
+    }
+    // Canvas のサイズを超えている場合は、Canvas をはみ出ないサイズに調整
+    // if (Math.max(size.width, size.height) > CANVAS_SIZE) {
+    //   const ratio = size.width / size.height
+    //   size.width = ratio > 1 ? 1 : ratio
+    //   size.height = ratio > 1 ? 1 / ratio : 1
+    // } else {
+    //   size.width /= CANVAS_SIZE
+    //   size.height /= CANVAS_SIZE
+    // }
+
+    return (
+      <KonvaImage
+        image={image}
+        x={0}
+        y={0}
+        width={size.width}
+        height={size.height}
+      />
+    )
+  }
+}
+
+type Props = {
+  pasteData?: string | File
+}
+export const Canvas = ({ pasteData }: Props) => {
   const { shapeType } = React.useContext(ShapeTypeContext)
   const [start, setStart] = React.useState<Konva.Vector2d>({
     x: 0,
@@ -63,8 +115,17 @@ export const Canvas = () => {
   })
   const [items, setItems] = React.useState<React.ReactNodeArray>([])
 
+  React.useEffect(() => {
+    if (pasteData !== undefined) {
+      const func = async () => {
+        const obj = await PasteObject(pasteData)
+        setItems((prev) => [...prev, obj])
+      }
+      func()
+    }
+  }, [pasteData])
+
   const handleMouseDown = (event: Konva.KonvaEventObject<MouseEvent>) => {
-    console.log(event)
     const pos = event.target.getStage()?.getPointerPosition()
     if (pos) {
       setStart(pos)
@@ -72,7 +133,7 @@ export const Canvas = () => {
   }
   const handleMouseUp = (event: Konva.KonvaEventObject<MouseEvent>) => {
     const pos = event.target.getStage()?.getPointerPosition()
-    console.log(pos)
+
     setStart({ x: 0, y: 0 })
     if (pos) {
       const shape = CreateShape(shapeType, start, pos)
@@ -83,8 +144,8 @@ export const Canvas = () => {
   }
   return (
     <Stage
-      width={window.innerWidth}
-      height={window.innerHeight}
+      width={1000}
+      height={1000}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}>
       <Layer>
@@ -96,7 +157,7 @@ export const Canvas = () => {
           fill="gray"
           stroke={'blue'}
         />
-        {items.map((item) => item)}
+        {React.Children.toArray(items).map((item) => item)}
       </Layer>
     </Stage>
   )
