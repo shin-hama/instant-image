@@ -10,6 +10,7 @@ import {
 import Konva from 'konva'
 
 import { ShapeTypeContext } from 'pages/Root'
+import { PasteData } from 'contexts/PasteDataProvider'
 
 const CreateShape = (shape: string, p1: Konva.Vector2d, p2: Konva.Vector2d) => {
   switch (shape) {
@@ -104,16 +105,14 @@ const PasteObject = async (data: string | File) => {
   }
 }
 
-type Props = {
-  pasteData?: string | File
-}
-export const Canvas = ({ pasteData }: Props) => {
+export const Canvas = () => {
   const { shapeType } = React.useContext(ShapeTypeContext)
   const [start, setStart] = React.useState<Konva.Vector2d>({
     x: 0,
     y: 0,
   })
   const [items, setItems] = React.useState<React.ReactNodeArray>([])
+  const pasteData = React.useContext(PasteData)
 
   React.useEffect(() => {
     if (pasteData !== undefined) {

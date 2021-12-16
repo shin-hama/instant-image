@@ -17,27 +17,6 @@ export const ShapeTypeContext = React.createContext<ShapeTypeProps>({
 
 const Root = () => {
   const [shapeType, setShapeType] = React.useState('Line')
-  const [pasteData, setPasteData] = React.useState<string | File>()
-  const handlePaste = (e: ClipboardEvent) => {
-    if (e.clipboardData === null) {
-      return
-    }
-
-    if (e.clipboardData.files.length > 0) {
-      const file = e.clipboardData.files[0]
-      setPasteData(file)
-    } else {
-      setPasteData(e.clipboardData.getData('Text'))
-    }
-  }
-
-  React.useEffect(() => {
-    document.addEventListener('paste', handlePaste)
-
-    return () => {
-      document.removeEventListener('paste', handlePaste)
-    }
-  }, [])
 
   return (
     <Box>
@@ -47,7 +26,7 @@ const Root = () => {
           onCopy={() => console.log('handlePaste')}
           sx={{ margin: 10, border: 'black' }}
           onPaste={() => console.log('test')}>
-          <Canvas pasteData={pasteData} />
+          <Canvas />
         </Box>
       </ShapeTypeContext.Provider>
     </Box>
