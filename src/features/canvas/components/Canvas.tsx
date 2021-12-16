@@ -11,8 +11,10 @@ import Konva from 'konva'
 
 import { ShapeTypeContext } from 'pages/Root'
 import { PasteData } from 'contexts/PasteDataProvider'
+import { Vector2d } from 'konva/lib/types'
+import TextBlock from './TextBlock'
 
-const CreateShape = (shape: string, p1: Konva.Vector2d, p2: Konva.Vector2d) => {
+const CreateShape = (shape: string, p1: Vector2d, p2: Vector2d) => {
   switch (shape) {
     case 'Circle': {
       const center = {
@@ -35,11 +37,11 @@ const CreateShape = (shape: string, p1: Konva.Vector2d, p2: Konva.Vector2d) => {
       )
     }
     case 'Rect': {
-      const leftTop: Konva.Vector2d = {
+      const leftTop: Vector2d = {
         x: Math.min(p1.x, p2.x),
         y: Math.min(p1.y, p2.y),
       }
-      const widthHeight: Konva.Vector2d = {
+      const widthHeight: Vector2d = {
         x: Math.abs(p1.x - p2.x),
         y: Math.abs(p1.y - p2.y),
       }
@@ -58,6 +60,8 @@ const CreateShape = (shape: string, p1: Konva.Vector2d, p2: Konva.Vector2d) => {
       return (
         <Line points={[p1.x, p1.y, p2.x, p2.y]} stroke="blue" strokeWidth={4} />
       )
+    case 'Text':
+      return <TextBlock point={p1} />
     default:
       break
   }
@@ -107,7 +111,7 @@ const PasteObject = async (data: string | File) => {
 
 export const Canvas = () => {
   const { shapeType } = React.useContext(ShapeTypeContext)
-  const [start, setStart] = React.useState<Konva.Vector2d>({
+  const [start, setStart] = React.useState<Vector2d>({
     x: 0,
     y: 0,
   })

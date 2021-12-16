@@ -28,6 +28,7 @@ const Navbar = () => {
             <MenuItem value={'Line'}>Line</MenuItem>
             <MenuItem value={'Rect'}>Rect</MenuItem>
             <MenuItem value={'Circle'}>Circle</MenuItem>
+            <MenuItem value={'Text'}>Text</MenuItem>
           </Select>
         </FormControl>
       </Toolbar>
