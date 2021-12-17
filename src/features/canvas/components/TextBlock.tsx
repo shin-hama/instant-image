@@ -1,32 +1,34 @@
 import * as React from 'react'
 import { Text } from 'react-konva'
 import Konva from 'konva'
-import TextField from '@mui/material/TextField'
 import { KonvaEventObject } from 'konva/lib/Node'
+
+import { TextEditorContext } from 'contexts/TextEditorProvider'
+
+const useTextEditor = () => {
+  const edit = React.useContext(TextEditorContext)
+  return edit
+}
 
 type Props = {
   point: Konva.Vector2d
 }
 const TextBlock = ({ point }: Props) => {
-  const [editing, setEditing] = React.useState(false)
+  const edit = useTextEditor()
   const handleDoubleClick = (event: KonvaEventObject<MouseEvent>) => {
     console.log('test')
-    setEditing(true)
+    edit()
+      .then(() => console.log('then'))
+      .catch(() => console.log('catch'))
   }
-  const [value, setValue] = React.useState('some text')
 
-  return editing ? (
-    <TextField value={value} onChange={(e) => setValue(e.target.value)} />
-  ) : (
+  return (
     <Text
-      text={value}
+      text={'some text'}
       fontSize={20}
       {...point}
       onDblClick={handleDoubleClick}
-      onClick={(e) => {
-        console.log('clicked')
-        e.evt.preventDefault()
-      }}
+      onClick={(e) => e.evt.preventDefault()}
     />
   )
 }

@@ -115,14 +115,14 @@ export const Canvas = () => {
     x: 0,
     y: 0,
   })
-  const [items, setItems] = React.useState<React.ReactNodeArray>([])
+  const [konvaItems, setKonvaItems] = React.useState<React.ReactNodeArray>([])
   const pasteData = React.useContext(PasteData)
 
   React.useEffect(() => {
     if (pasteData !== undefined) {
       const func = async () => {
         const obj = await PasteObject(pasteData)
-        setItems((prev) => [...prev, obj])
+        setKonvaItems((prev) => [...prev, obj])
       }
       func()
     }
@@ -141,27 +141,30 @@ export const Canvas = () => {
     if (pos) {
       const shape = CreateShape(shapeType, start, pos)
       if (shape) {
-        setItems((prev) => [...prev, shape])
+        console.log(shape)
+        setKonvaItems((prev) => [...prev, shape])
       }
     }
   }
   return (
-    <Stage
-      width={1000}
-      height={1000}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}>
-      <Layer>
-        <Rect
-          x={200}
-          y={200}
-          width={200}
-          height={200}
-          fill="gray"
-          stroke={'blue'}
-        />
-        {React.Children.toArray(items).map((item) => item)}
-      </Layer>
-    </Stage>
+    <>
+      <Stage
+        width={1000}
+        height={1000}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}>
+        <Layer>
+          <Rect
+            x={200}
+            y={200}
+            width={200}
+            height={200}
+            fill="gray"
+            stroke={'blue'}
+          />
+          {React.Children.toArray(konvaItems).map((item) => item)}
+        </Layer>
+      </Stage>
+    </>
   )
 }

@@ -3,7 +3,7 @@ import * as React from 'react'
 type PasteDataProps = string | File | undefined
 export const PasteData = React.createContext<PasteDataProps>(undefined)
 
-const PasteDataProvider: React.FC = ({ children }) => {
+export const PasteDataProvider: React.FC = ({ children }) => {
   const [pasteData, setPasteData] = React.useState<string | File>()
   const handlePaste = (e: ClipboardEvent) => {
     if (e.clipboardData === null) {
@@ -28,5 +28,3 @@ const PasteDataProvider: React.FC = ({ children }) => {
 
   return <PasteData.Provider value={pasteData}>{children}</PasteData.Provider>
 }
-
-export default PasteDataProvider
