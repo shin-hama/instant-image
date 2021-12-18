@@ -110,6 +110,7 @@ const PasteObject = async (data: string | File) => {
 
 export const Canvas = () => {
   const { shapeType } = React.useContext(ShapeTypeContext)
+  const [newShape, setNewShape] = React.useState<React.ReactNode>()
   const [start, setStart] = React.useState<Vector2d>({
     x: 0,
     y: 0,
@@ -132,6 +133,15 @@ export const Canvas = () => {
     const pos = event.target.getStage()?.getPointerPosition()
     if (pos) {
       setStart(pos)
+      const shape = CreateShape(shapeType, pos, pos)
+      setNewShape(shape)
+    }
+  }
+  const handleMouseMove = (event: Konva.KonvaEventObject<MouseEvent>) => {
+    const pos = event.target.getStage()?.getPointerPosition()
+    if (pos && newShape) {
+      const shape = CreateShape(shapeType, start, pos)
+      setNewShape(shape)
     }
   }
   const handleMouseUp = (event: Konva.KonvaEventObject<MouseEvent>) => {
@@ -150,12 +160,11 @@ export const Canvas = () => {
           }
         })
       }
-      const shape = CreateShape(shapeType, start, pos)
-      if (shape) {
-        console.log(shape)
-        setKonvaItems((prev) => [...prev, shape])
+      if (newShape) {
+        setKonvaItems((prev) => [...prev, newShape])
       }
     }
+    setNewShape(undefined)
     setStart({ x: 0, y: 0 })
   }
   return (
@@ -165,11 +174,13 @@ export const Canvas = () => {
           width={1000}
           height={1000}
           onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}>
           <TextEditorContext.Provider value={value}>
             <Layer>
               <TextBlock point={{ x: 200, y: 200 }} />
               {React.Children.toArray(konvaItems).map((item) => item)}
+              {newShape}
             </Layer>
           </TextEditorContext.Provider>
         </Stage>

@@ -88,6 +88,7 @@ export const TextEditorProvider: React.FC = ({ children }) => {
         <TextField
           autoFocus
           value={value}
+          placeholder="Input Text"
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           onBlur={handleBlur}
