@@ -6,6 +6,7 @@ import {
   Line,
   Ellipse,
   Image as KonvaImage,
+  useStrictMode,
 } from 'react-konva'
 import Konva from 'konva'
 
@@ -13,6 +14,7 @@ import { ShapeTypeContext } from 'pages/Root'
 import { PasteData } from 'contexts/PasteDataProvider'
 import { Vector2d } from 'konva/lib/types'
 import TextBlock from './TextBlock'
+import { TextEditorContext } from 'contexts/TextEditorProvider'
 
 const CreateShape = (shape: string, p1: Vector2d, p2: Vector2d) => {
   switch (shape) {
@@ -57,14 +59,17 @@ const CreateShape = (shape: string, p1: Vector2d, p2: Vector2d) => {
       )
     }
     case 'Line':
-      return (
-        <Line points={[p1.x, p1.y, p2.x, p2.y]} stroke="blue" strokeWidth={4} />
-      )
+      return <MyLine points={[p1.x, p1.y, p2.x, p2.y]} />
     case 'Text':
       return <TextBlock point={p1} />
     default:
       break
   }
+}
+
+const MyLine = ({ points }: { points: number[] }) => {
+  useStrictMode(true)
+  return <Line points={points} stroke="blue" strokeWidth={4} _useStrictMode />
 }
 
 const PasteObject = async (data: string | File) => {
@@ -147,24 +152,28 @@ export const Canvas = () => {
     }
   }
   return (
-    <>
-      <Stage
-        width={1000}
-        height={1000}
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}>
-        <Layer>
-          <Rect
-            x={200}
-            y={200}
-            width={200}
-            height={200}
-            fill="gray"
-            stroke={'blue'}
-          />
-          {React.Children.toArray(konvaItems).map((item) => item)}
-        </Layer>
-      </Stage>
-    </>
+    <TextEditorContext.Consumer>
+      {(value) => (
+        <Stage
+          width={1000}
+          height={1000}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}>
+          <TextEditorContext.Provider value={value}>
+            <Layer>
+              <Rect
+                x={200}
+                y={200}
+                width={200}
+                height={200}
+                fill="gray"
+                stroke={'blue'}
+              />
+              {React.Children.toArray(konvaItems).map((item) => item)}
+            </Layer>
+          </TextEditorContext.Provider>
+        </Stage>
+      )}
+    </TextEditorContext.Consumer>
   )
 }
