@@ -24,7 +24,6 @@ const TextBlock = ({ point, defaultValue = 'default' }: Props) => {
     edit({ pos, value })
       .then((result) => {
         setValue(result)
-        console.log('then: ' + result)
       })
       .catch((result) => console.log(result))
       .finally(() => text.show())
