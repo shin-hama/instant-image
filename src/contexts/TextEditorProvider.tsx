@@ -17,16 +17,17 @@ export const TextEditorContext = React.createContext<
   })
 })
 
+const initOptions = () => ({
+  pos: { x: 0, y: 0 },
+  value: '',
+})
+
 export const TextEditorProvider: React.FC = ({ children }) => {
   const [value, setValue] = React.useState('default')
+  const [options, setOptions] = React.useState<EditorOptions>(initOptions())
   const [resolveReject, setResolveReject] = React.useState<
     ((result: string) => void)[]
   >([])
-  const [options, setOptions] = React.useState<EditorOptions>({
-    pos: { x: 0, y: 0 },
-    value: '',
-  })
-
   const [resolve, reject] = resolveReject
 
   const edit = React.useCallback((args: EditorOptions) => {
@@ -42,6 +43,7 @@ export const TextEditorProvider: React.FC = ({ children }) => {
 
   const handleClose = React.useCallback(() => {
     setResolveReject([])
+    setOptions(initOptions())
   }, [])
 
   const handleCancel = React.useCallback(() => {
@@ -52,7 +54,6 @@ export const TextEditorProvider: React.FC = ({ children }) => {
   }, [reject, handleClose, value])
 
   const handleComplete = React.useCallback(() => {
-    console.log('comp')
     if (resolve) {
       resolve(value)
       handleClose()
@@ -60,7 +61,6 @@ export const TextEditorProvider: React.FC = ({ children }) => {
   }, [resolve, value, handleClose])
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    console.log(event.key)
     if (event.key === 'Enter') {
       handleComplete()
     } else if (event.key === 'Escape') {
@@ -73,6 +73,12 @@ export const TextEditorProvider: React.FC = ({ children }) => {
   ) => {
     setValue(event.target.value)
   }
+
+  const handleBlur = () => {
+    // When focus is out
+    handleComplete()
+  }
+
   return (
     <>
       <TextEditorContext.Provider value={edit}>
@@ -80,9 +86,11 @@ export const TextEditorProvider: React.FC = ({ children }) => {
       </TextEditorContext.Provider>
       {resolveReject.length > 0 && (
         <TextField
+          autoFocus
           value={value}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
+          onBlur={handleBlur}
           sx={{ position: 'absolute', left: options.pos.x, top: options.pos.y }}
         />
       )}
