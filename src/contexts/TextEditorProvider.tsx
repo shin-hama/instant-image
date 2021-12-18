@@ -1,27 +1,44 @@
 import * as React from 'react'
 import TextField from '@mui/material/TextField'
+import { Vector2d } from 'konva/lib/types'
 
-export const TextEditorContext = React.createContext<() => Promise<void>>(
-  () => {
-    return new Promise<void>((resolve) => {
-      console.log('not implemented')
-      resolve()
-    })
-  }
-)
+type EditorOptions = {
+  pos: Vector2d
+  value: string
+}
+
+export const TextEditorContext = React.createContext<
+  (args: EditorOptions) => Promise<string>
+>(() => {
+  return new Promise<string>((resolve) => {
+    const msg = 'not implemented'
+    console.log(msg)
+    resolve(msg)
+  })
+})
 
 export const TextEditorProvider: React.FC = ({ children }) => {
   const [value, setValue] = React.useState('default')
-  const [resolveReject, setResolveReject] = React.useState<(() => void)[]>([])
+  const [resolveReject, setResolveReject] = React.useState<
+    ((result: string) => void)[]
+  >([])
+  const [options, setOptions] = React.useState<EditorOptions>({
+    pos: { x: 0, y: 0 },
+    value: '',
+  })
 
   const [resolve, reject] = resolveReject
 
-  const edit = React.useCallback(() => {
-    return new Promise<void>((resolve, reject) => {
-      console.log('res rej')
+  const edit = React.useCallback((args: EditorOptions) => {
+    setOptions((prev) => ({ ...prev, ...args }))
+    return new Promise<string>((resolve, reject) => {
       setResolveReject([resolve, reject])
     })
   }, [])
+
+  React.useEffect(() => {
+    setValue(options.value)
+  }, [options.value])
 
   const handleClose = React.useCallback(() => {
     setResolveReject([])
@@ -29,18 +46,18 @@ export const TextEditorProvider: React.FC = ({ children }) => {
 
   const handleCancel = React.useCallback(() => {
     if (reject) {
-      reject()
+      reject(value)
       handleClose()
     }
-  }, [reject, handleClose])
+  }, [reject, handleClose, value])
 
   const handleComplete = React.useCallback(() => {
     console.log('comp')
     if (resolve) {
-      resolve()
+      resolve(value)
       handleClose()
     }
-  }, [resolve, handleClose])
+  }, [resolve, value, handleClose])
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     console.log(event.key)
@@ -58,7 +75,7 @@ export const TextEditorProvider: React.FC = ({ children }) => {
   }
   return (
     <>
-      <TextEditorContext.Provider value={() => edit()}>
+      <TextEditorContext.Provider value={edit}>
         {children}
       </TextEditorContext.Provider>
       {resolveReject.length > 0 && (
@@ -66,7 +83,7 @@ export const TextEditorProvider: React.FC = ({ children }) => {
           value={value}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
-          sx={{ position: 'absolute', left: '300px', top: '300px' }}
+          sx={{ position: 'absolute', left: options.pos.x, top: options.pos.y }}
         />
       )}
     </>

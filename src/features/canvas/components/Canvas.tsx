@@ -6,7 +6,6 @@ import {
   Line,
   Ellipse,
   Image as KonvaImage,
-  useStrictMode,
 } from 'react-konva'
 import Konva from 'konva'
 
@@ -59,17 +58,14 @@ const CreateShape = (shape: string, p1: Vector2d, p2: Vector2d) => {
       )
     }
     case 'Line':
-      return <MyLine points={[p1.x, p1.y, p2.x, p2.y]} />
+      return (
+        <Line points={[p1.x, p1.y, p2.x, p2.y]} stroke="blue" strokeWidth={4} />
+      )
     case 'Text':
       return <TextBlock point={p1} />
     default:
       break
   }
-}
-
-const MyLine = ({ points }: { points: number[] }) => {
-  useStrictMode(true)
-  return <Line points={points} stroke="blue" strokeWidth={4} _useStrictMode />
 }
 
 const PasteObject = async (data: string | File) => {
@@ -161,14 +157,7 @@ export const Canvas = () => {
           onMouseUp={handleMouseUp}>
           <TextEditorContext.Provider value={value}>
             <Layer>
-              <Rect
-                x={200}
-                y={200}
-                width={200}
-                height={200}
-                fill="gray"
-                stroke={'blue'}
-              />
+              <TextBlock point={{ x: 200, y: 200 }} />
               {React.Children.toArray(konvaItems).map((item) => item)}
             </Layer>
           </TextEditorContext.Provider>

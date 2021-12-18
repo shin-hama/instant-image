@@ -5,26 +5,33 @@ import { KonvaEventObject } from 'konva/lib/Node'
 
 import { TextEditorContext } from 'contexts/TextEditorProvider'
 
-const useTextEditor = () => {
-  const edit = React.useContext(TextEditorContext)
-  return edit
-}
-
 type Props = {
   point: Konva.Vector2d
 }
 const TextBlock = ({ point }: Props) => {
-  const edit = useTextEditor()
+  const [value, setValue] = React.useState('default')
+  const edit = React.useContext(TextEditorContext)
   const handleDoubleClick = (event: KonvaEventObject<MouseEvent>) => {
-    console.log('test')
-    edit()
-      .then(() => console.log('then'))
-      .catch(() => console.log('catch'))
+    console.log(event)
+    const text = event.target
+    const textPos = text.absolutePosition()
+    const pos = {
+      x: textPos.x + (text.getStage()?.container().offsetLeft || 0),
+      y: textPos.y + (text.getStage()?.container().offsetTop || 0),
+    }
+    text.hide()
+    edit({ pos, value })
+      .then((result) => {
+        setValue(result)
+        console.log('then: ' + result)
+      })
+      .catch((result) => console.log(result))
+      .finally(() => text.show())
   }
 
   return (
     <Text
-      text={'some text'}
+      text={value}
       fontSize={20}
       {...point}
       onDblClick={handleDoubleClick}

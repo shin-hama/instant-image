@@ -16,7 +16,7 @@ export const ShapeTypeContext = React.createContext<ShapeTypeProps>({
 })
 
 const Root = () => {
-  const [shapeType, setShapeType] = React.useState('Line')
+  const [shapeType, setShapeType] = React.useState('Select')
 
   return (
     <Box>
