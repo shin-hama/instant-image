@@ -132,9 +132,14 @@ export const Canvas = () => {
   const handleMouseDown = (event: Konva.KonvaEventObject<MouseEvent>) => {
     const pos = event.target.getStage()?.getPointerPosition()
     if (pos) {
-      setStart(pos)
+      if (shapeType === 'Text') {
+        const { clientX, clientY } = event.evt
+        pos.x = clientX
+        pos.y = clientY
+      }
       const shape = CreateShape(shapeType, pos, pos)
       setNewShape(shape)
+      setStart(pos)
     }
   }
   const handleMouseMove = (event: Konva.KonvaEventObject<MouseEvent>) => {
@@ -149,9 +154,8 @@ export const Canvas = () => {
 
     if (pos) {
       if (shapeType === 'Text') {
-        const { clientX, clientY } = event.evt
         edit({
-          pos: { x: clientX, y: clientY },
+          pos: start,
           value: '',
         }).then((result) => {
           if (result) {
