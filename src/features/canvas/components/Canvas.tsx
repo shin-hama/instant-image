@@ -11,8 +11,11 @@ import Konva from 'konva'
 
 import { ShapeTypeContext } from 'pages/Root'
 import { PasteData } from 'contexts/PasteDataProvider'
+import { Vector2d } from 'konva/lib/types'
+import TextBlock from './TextBlock'
+import { TextEditorContext } from 'contexts/TextEditorProvider'
 
-const CreateShape = (shape: string, p1: Konva.Vector2d, p2: Konva.Vector2d) => {
+const CreateShape = (shape: string, p1: Vector2d, p2: Vector2d) => {
   switch (shape) {
     case 'Circle': {
       const center = {
@@ -35,11 +38,11 @@ const CreateShape = (shape: string, p1: Konva.Vector2d, p2: Konva.Vector2d) => {
       )
     }
     case 'Rect': {
-      const leftTop: Konva.Vector2d = {
+      const leftTop: Vector2d = {
         x: Math.min(p1.x, p2.x),
         y: Math.min(p1.y, p2.y),
       }
-      const widthHeight: Konva.Vector2d = {
+      const widthHeight: Vector2d = {
         x: Math.abs(p1.x - p2.x),
         y: Math.abs(p1.y - p2.y),
       }
@@ -107,18 +110,19 @@ const PasteObject = async (data: string | File) => {
 
 export const Canvas = () => {
   const { shapeType } = React.useContext(ShapeTypeContext)
-  const [start, setStart] = React.useState<Konva.Vector2d>({
+  const [start, setStart] = React.useState<Vector2d>({
     x: 0,
     y: 0,
   })
-  const [items, setItems] = React.useState<React.ReactNodeArray>([])
+  const [konvaItems, setKonvaItems] = React.useState<React.ReactNodeArray>([])
   const pasteData = React.useContext(PasteData)
+  const edit = React.useContext(TextEditorContext)
 
   React.useEffect(() => {
     if (pasteData !== undefined) {
       const func = async () => {
         const obj = await PasteObject(pasteData)
-        setItems((prev) => [...prev, obj])
+        setKonvaItems((prev) => [...prev, obj])
       }
       func()
     }
@@ -133,31 +137,43 @@ export const Canvas = () => {
   const handleMouseUp = (event: Konva.KonvaEventObject<MouseEvent>) => {
     const pos = event.target.getStage()?.getPointerPosition()
 
-    setStart({ x: 0, y: 0 })
     if (pos) {
+      if (shapeType === 'Text') {
+        const { clientX, clientY } = event.evt
+        edit({
+          pos: { x: clientX, y: clientY },
+          value: '',
+        }).then((result) => {
+          if (result) {
+            const shape = <TextBlock point={pos} defaultValue={result} />
+            setKonvaItems((prev) => [...prev, shape])
+          }
+        })
+      }
       const shape = CreateShape(shapeType, start, pos)
       if (shape) {
-        setItems((prev) => [...prev, shape])
+        console.log(shape)
+        setKonvaItems((prev) => [...prev, shape])
       }
     }
+    setStart({ x: 0, y: 0 })
   }
   return (
-    <Stage
-      width={1000}
-      height={1000}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}>
-      <Layer>
-        <Rect
-          x={200}
-          y={200}
-          width={200}
-          height={200}
-          fill="gray"
-          stroke={'blue'}
-        />
-        {React.Children.toArray(items).map((item) => item)}
-      </Layer>
-    </Stage>
+    <TextEditorContext.Consumer>
+      {(value) => (
+        <Stage
+          width={1000}
+          height={1000}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}>
+          <TextEditorContext.Provider value={value}>
+            <Layer>
+              <TextBlock point={{ x: 200, y: 200 }} />
+              {React.Children.toArray(konvaItems).map((item) => item)}
+            </Layer>
+          </TextEditorContext.Provider>
+        </Stage>
+      )}
+    </TextEditorContext.Consumer>
   )
 }
