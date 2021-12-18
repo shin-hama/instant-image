@@ -39,7 +39,7 @@ export const TextEditorProvider: React.FC = ({ children }) => {
 
   React.useEffect(() => {
     setValue(options.value)
-  }, [options.value])
+  }, [options])
 
   const handleClose = React.useCallback(() => {
     setResolveReject([])

@@ -61,8 +61,6 @@ const CreateShape = (shape: string, p1: Vector2d, p2: Vector2d) => {
       return (
         <Line points={[p1.x, p1.y, p2.x, p2.y]} stroke="blue" strokeWidth={4} />
       )
-    case 'Text':
-      return <TextBlock point={p1} />
     default:
       break
   }
@@ -118,6 +116,7 @@ export const Canvas = () => {
   })
   const [konvaItems, setKonvaItems] = React.useState<React.ReactNodeArray>([])
   const pasteData = React.useContext(PasteData)
+  const edit = React.useContext(TextEditorContext)
 
   React.useEffect(() => {
     if (pasteData !== undefined) {
@@ -138,14 +137,26 @@ export const Canvas = () => {
   const handleMouseUp = (event: Konva.KonvaEventObject<MouseEvent>) => {
     const pos = event.target.getStage()?.getPointerPosition()
 
-    setStart({ x: 0, y: 0 })
     if (pos) {
+      if (shapeType === 'Text') {
+        const { clientX, clientY } = event.evt
+        edit({
+          pos: { x: clientX, y: clientY },
+          value: '',
+        }).then((result) => {
+          if (result) {
+            const shape = <TextBlock point={pos} defaultValue={result} />
+            setKonvaItems((prev) => [...prev, shape])
+          }
+        })
+      }
       const shape = CreateShape(shapeType, start, pos)
       if (shape) {
         console.log(shape)
         setKonvaItems((prev) => [...prev, shape])
       }
     }
+    setStart({ x: 0, y: 0 })
   }
   return (
     <TextEditorContext.Consumer>

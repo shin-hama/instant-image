@@ -7,12 +7,13 @@ import { TextEditorContext } from 'contexts/TextEditorProvider'
 
 type Props = {
   point: Konva.Vector2d
+  defaultValue?: string
 }
-const TextBlock = ({ point }: Props) => {
-  const [value, setValue] = React.useState('default')
+const TextBlock = ({ point, defaultValue = 'default' }: Props) => {
+  const [value, setValue] = React.useState(defaultValue)
   const edit = React.useContext(TextEditorContext)
+
   const handleDoubleClick = (event: KonvaEventObject<MouseEvent>) => {
-    console.log(event)
     const text = event.target
     const textPos = text.absolutePosition()
     const pos = {
