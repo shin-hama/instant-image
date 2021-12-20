@@ -14,6 +14,7 @@ import { PasteData } from 'contexts/PasteDataProvider'
 import { Vector2d } from 'konva/lib/types'
 import TextBlock from './TextBlock'
 import { TextEditorContext } from 'contexts/TextEditorProvider'
+import { StageRef } from 'contexts/StageRefProvider'
 
 const CreateShape = (shape: string, p1: Vector2d, p2: Vector2d) => {
   switch (shape) {
@@ -192,10 +193,13 @@ export const Canvas = () => {
     const line = drawFreeLine(freePoints)
     setNewShape(line)
   }, [freePoints])
+
+  const stageRef = React.useContext(StageRef)
   return (
     <TextEditorContext.Consumer>
       {(value) => (
         <Stage
+          ref={stageRef}
           width={1000}
           height={1000}
           onMouseDown={handleMouseDown}
