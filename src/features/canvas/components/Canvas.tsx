@@ -66,6 +66,12 @@ const CreateShape = (shape: string, p1: Vector2d, p2: Vector2d) => {
   }
 }
 
+const drawFreeLine = (points: number[]) => {
+  return (
+    <Line points={points} mode="source-over" stroke="blue" strokeWidth={4} />
+  )
+}
+
 const PasteObject = async (data: string | File) => {
   if (data instanceof File && data.type.startsWith('image')) {
     const image = await new Promise<HTMLImageElement>((resolve, reject) => {
@@ -116,6 +122,7 @@ export const Canvas = () => {
     y: 0,
   })
   const [konvaItems, setKonvaItems] = React.useState<React.ReactNodeArray>([])
+  const [freePoints, setFreePoints] = React.useState<number[]>([])
   const pasteData = React.useContext(PasteData)
   const edit = React.useContext(TextEditorContext)
 
@@ -136,7 +143,11 @@ export const Canvas = () => {
         const { clientX, clientY } = event.evt
         pos.x = clientX
         pos.y = clientY
+      } else if (shapeType === 'Free') {
+        setFreePoints((prev) => [pos.x, pos.y, pos.x, pos.y])
+        return
       }
+
       const shape = CreateShape(shapeType, pos, pos)
       setNewShape(shape)
       setStart(pos)
@@ -145,6 +156,11 @@ export const Canvas = () => {
   const handleMouseMove = (event: Konva.KonvaEventObject<MouseEvent>) => {
     const pos = event.target.getStage()?.getPointerPosition()
     if (pos && newShape) {
+      if (shapeType === 'Free') {
+        setFreePoints((prev) => [...prev, pos.x, pos.y])
+        return
+      }
+
       const shape = CreateShape(shapeType, start, pos)
       setNewShape(shape)
     }
@@ -171,6 +187,11 @@ export const Canvas = () => {
     setNewShape(undefined)
     setStart({ x: 0, y: 0 })
   }
+
+  React.useEffect(() => {
+    const line = drawFreeLine(freePoints)
+    setNewShape(line)
+  }, [freePoints])
   return (
     <TextEditorContext.Consumer>
       {(value) => (

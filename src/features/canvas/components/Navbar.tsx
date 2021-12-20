@@ -27,6 +27,7 @@ const Navbar = () => {
             onChange={handleChange}>
             <MenuItem value={'Select'}>Select</MenuItem>
             <MenuItem value={'Line'}>Line</MenuItem>
+            <MenuItem value={'Free'}>Free Line</MenuItem>
             <MenuItem value={'Rect'}>Rect</MenuItem>
             <MenuItem value={'Circle'}>Circle</MenuItem>
             <MenuItem value={'Text'}>Text</MenuItem>
