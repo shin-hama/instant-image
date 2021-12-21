@@ -194,7 +194,20 @@ export const Canvas = () => {
     setNewShape(line)
   }, [freePoints])
 
+  const [background, setBackground] = React.useState<React.ReactNode>()
+
   const stageRef = React.useContext(StageRef)
+  React.useEffect(() => {
+    if (stageRef?.current) {
+      const stageEnd = {
+        x: stageRef.current.width(),
+        y: stageRef.current.height(),
+      }
+      const rect = CreateShape('Rect', { x: 0, y: 0 }, stageEnd)
+      setBackground(rect)
+    }
+  }, [stageRef])
+
   return (
     <TextEditorContext.Consumer>
       {(value) => (
@@ -207,6 +220,7 @@ export const Canvas = () => {
           onMouseUp={handleMouseUp}>
           <TextEditorContext.Provider value={value}>
             <Layer>
+              {background}
               <TextBlock point={{ x: 200, y: 200 }} />
               {React.Children.toArray(konvaItems).map((item) => item)}
               {newShape}
