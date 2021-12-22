@@ -92,6 +92,7 @@ export const TextEditorProvider: React.FC = ({ children }) => {
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           onBlur={handleBlur}
+          inputProps={{ sx: { padding: 0 } }}
           sx={{ position: 'absolute', left: options.pos.x, top: options.pos.y }}
         />
       )}

@@ -7,9 +7,9 @@ import { TextEditorContext } from 'contexts/TextEditorProvider'
 
 type Props = {
   point: Konva.Vector2d
-  defaultValue?: string
+  value?: string
 }
-const TextBlock = ({ point, defaultValue = 'default' }: Props) => {
+const TextBlock = ({ point, value: defaultValue = 'default' }: Props) => {
   const [value, setValue] = React.useState(defaultValue)
   const edit = React.useContext(TextEditorContext)
 
@@ -34,6 +34,7 @@ const TextBlock = ({ point, defaultValue = 'default' }: Props) => {
       text={value}
       fontSize={20}
       {...point}
+      draggable
       onDblClick={handleDoubleClick}
       onClick={(e) => e.evt.preventDefault()}
     />
