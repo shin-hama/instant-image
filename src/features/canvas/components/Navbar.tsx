@@ -1,5 +1,7 @@
 import * as React from 'react'
+import { styled } from '@mui/material'
 import AppBar from '@mui/material/AppBar'
+import Button from '@mui/material/Button'
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
@@ -7,17 +9,34 @@ import Select, { SelectChangeEvent } from '@mui/material/Select'
 import Toolbar from '@mui/material/Toolbar'
 
 import { ShapeTypeContext } from 'pages/Root'
+import { StageRef } from 'contexts/StageRefProvider'
+
+const FlexDiv = styled('div')((theme) => ({
+  flexGrow: 1,
+}))
 
 const Navbar = () => {
   const { shapeType, setShapeType } = React.useContext(ShapeTypeContext)
   const handleChange = (event: SelectChangeEvent) => {
     setShapeType(event.target.value)
   }
+  const stageRef = React.useContext(StageRef)
+  const handleDownload = () => {
+    if (stageRef?.current) {
+      const dataUrl = stageRef.current.toDataURL()
+      const link = document.createElement('a')
+      link.download = 'stage.png'
+      link.href = dataUrl
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    }
+  }
 
   return (
     <AppBar>
       <Toolbar>
-        <FormControl fullWidth>
+        <FormControl>
           <InputLabel id="shape-select-label">Shape</InputLabel>
           <Select
             labelId="shape-select-label"
@@ -33,6 +52,10 @@ const Navbar = () => {
             <MenuItem value={'Text'}>Text</MenuItem>
           </Select>
         </FormControl>
+        <FlexDiv />
+        <Button onClick={handleDownload} variant="contained">
+          Download
+        </Button>
       </Toolbar>
     </AppBar>
   )
