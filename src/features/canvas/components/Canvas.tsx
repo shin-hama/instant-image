@@ -20,7 +20,9 @@ const CreateShape = (
   shape: string,
   p1: Vector2d,
   p2: Vector2d,
-  config: Konva.ShapeConfig = {}
+  config: Konva.ShapeConfig = {
+    draggable: true,
+  }
 ) => {
   switch (shape) {
     case 'Circle': {
@@ -231,6 +233,8 @@ export const Canvas = () => {
           width={1000}
           height={1000}
           onMouseDown={handleMouseDown}
+          // Prevent to create a small shape on dragging is started when set Shape type is not "select"
+          onDragStart={() => newShape && setNewShape(undefined)}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}>
           <TextEditorContext.Provider value={value}>
