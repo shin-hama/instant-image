@@ -16,7 +16,12 @@ import TextBlock from './TextBlock'
 import { TextEditorContext } from 'contexts/TextEditorProvider'
 import { StageRef } from 'contexts/StageRefProvider'
 
-const CreateShape = (shape: string, p1: Vector2d, p2: Vector2d) => {
+const CreateShape = (
+  shape: string,
+  p1: Vector2d,
+  p2: Vector2d,
+  config: Konva.ShapeConfig = {}
+) => {
   switch (shape) {
     case 'Circle': {
       const center = {
@@ -35,6 +40,7 @@ const CreateShape = (shape: string, p1: Vector2d, p2: Vector2d) => {
           radiusY={radius.y}
           fill="gray"
           stroke="blue"
+          {...config}
         />
       )
     }
@@ -55,12 +61,18 @@ const CreateShape = (shape: string, p1: Vector2d, p2: Vector2d) => {
           height={widthHeight.y}
           fill="gray"
           stroke="blue"
+          {...config}
         />
       )
     }
     case 'Line':
       return (
-        <Line points={[p1.x, p1.y, p2.x, p2.y]} stroke="blue" strokeWidth={4} />
+        <Line
+          points={[p1.x, p1.y, p2.x, p2.y]}
+          stroke="blue"
+          strokeWidth={4}
+          {...config}
+        />
       )
     default:
       break
@@ -203,7 +215,10 @@ export const Canvas = () => {
         x: stageRef.current.width(),
         y: stageRef.current.height(),
       }
-      const rect = CreateShape('Rect', { x: 0, y: 0 }, stageEnd)
+      const rect = CreateShape('Rect', { x: 0, y: 0 }, stageEnd, {
+        fill: 'white',
+        stroke: 'transparent',
+      })
       setBackground(rect)
     }
   }, [stageRef])
