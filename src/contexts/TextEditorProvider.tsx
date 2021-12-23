@@ -4,30 +4,23 @@ import InputUnstyled from '@mui/base/InputUnstyled'
 import { styled } from '@mui/system'
 import { Vector2d } from 'konva/lib/types'
 
-const StyledInputElement = styled('input')(
-  ({ theme }) => `
-  width: 320px;
-  font-size: 0.875rem;
-  font-family: IBM Plex Sans, sans-serif;
-  font-weight: 400;
-  line-height: 1.5;
-  color: grey.900;
-  background: transparent;
-  border-radius: 0px;
-  padding: 12px 12px;
-  transition: all 150ms ease;
-  font-size: 20;
-  padding: 0;
-  border: 'none';
-  border: 1px solid ${theme.palette.grey[900]};
+const StyledInputElement = styled('input')(({ theme }) => ({
+  width: '320px',
+  fontSize: 20,
+  fontWeight: 400,
+  lineHeight: 0,
+  background: 'transparent',
+  borderRadius: '0px',
+  padding: '0px',
+  transition: 'all 150ms ease',
+  border: 'none',
 
-  &:focus {
-    outline: none;
-    border: 1px solid ${theme.palette.grey[900]};
-    border-radius: 0px;
-  }
-`
-)
+  '&:focus': {
+    outline: 'none',
+    border: `1px solid ${theme.palette.grey[900]}`,
+    borderRadius: '0px',
+  },
+}))
 
 type EditorOptions = {
   pos: Vector2d
@@ -118,8 +111,8 @@ export const TextEditorProvider: React.FC = ({ children }) => {
         <div
           style={{
             position: 'absolute',
-            left: options.pos.x,
-            top: options.pos.y,
+            left: options.pos.x - 1,
+            top: options.pos.y - 3,
           }}>
           <InputUnstyled
             autoFocus

@@ -6,13 +6,7 @@ import { StageRefProvider } from 'contexts/StageRefProvider'
 import { TextEditorProvider } from 'contexts/TextEditorProvider'
 import Root from 'pages/Root'
 
-const customTheme = createTheme({
-  palette: {
-    primary: {
-      main: '#20b2aa',
-    },
-  },
-})
+const customTheme = createTheme()
 
 function App() {
   return (
