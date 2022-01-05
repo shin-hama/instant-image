@@ -20,7 +20,9 @@ const CreateShape = (
   shape: string,
   p1: Vector2d,
   p2: Vector2d,
-  config: Konva.ShapeConfig = {}
+  config: Konva.ShapeConfig = {
+    draggable: true,
+  }
 ) => {
   switch (shape) {
     case 'Circle': {
@@ -79,9 +81,20 @@ const CreateShape = (
   }
 }
 
-const drawFreeLine = (points: number[]) => {
+const drawFreeLine = (
+  points: number[],
+  config: Konva.ShapeConfig = {
+    draggable: true,
+  }
+) => {
   return (
-    <Line points={points} mode="source-over" stroke="blue" strokeWidth={4} />
+    <Line
+      points={points}
+      mode="source-over"
+      stroke="blue"
+      strokeWidth={4}
+      {...config}
+    />
   )
 }
 
@@ -138,6 +151,8 @@ export const Canvas = () => {
   const [freePoints, setFreePoints] = React.useState<number[]>([])
   const pasteData = React.useContext(PasteData)
   const edit = React.useContext(TextEditorContext)
+  const [absPos, setAbsPos] = React.useState<Vector2d>()
+  const stageRef = React.useContext(StageRef)
 
   React.useEffect(() => {
     if (pasteData !== undefined) {
@@ -154,8 +169,10 @@ export const Canvas = () => {
     if (pos) {
       if (shapeType === 'Text') {
         const { clientX, clientY } = event.evt
-        pos.x = clientX
-        pos.y = clientY
+        setAbsPos({
+          x: clientX,
+          y: clientY,
+        })
       } else if (shapeType === 'Free') {
         setFreePoints((prev) => [pos.x, pos.y, pos.x, pos.y])
         return
@@ -179,23 +196,21 @@ export const Canvas = () => {
     }
   }
   const handleMouseUp = (event: Konva.KonvaEventObject<MouseEvent>) => {
-    const pos = event.target.getStage()?.getPointerPosition()
-
-    if (pos) {
-      if (shapeType === 'Text') {
+    if (shapeType === 'Text') {
+      if (absPos && stageRef?.current) {
         edit({
-          pos: start,
+          pos: absPos,
           value: '',
         }).then((result) => {
           if (result) {
-            const shape = <TextBlock point={pos} defaultValue={result} />
+            const shape = <TextBlock point={start} value={result} />
             setKonvaItems((prev) => [...prev, shape])
           }
         })
       }
-      if (newShape) {
-        setKonvaItems((prev) => [...prev, newShape])
-      }
+    }
+    if (newShape) {
+      setKonvaItems((prev) => [...prev, newShape])
     }
     setNewShape(undefined)
     setStart({ x: 0, y: 0 })
@@ -208,7 +223,6 @@ export const Canvas = () => {
 
   const [background, setBackground] = React.useState<React.ReactNode>()
 
-  const stageRef = React.useContext(StageRef)
   React.useEffect(() => {
     if (stageRef?.current) {
       const stageEnd = {
@@ -231,6 +245,8 @@ export const Canvas = () => {
           width={1000}
           height={1000}
           onMouseDown={handleMouseDown}
+          // Prevent to create a small shape on dragging is started when set Shape type is not "select"
+          onDragStart={() => newShape && setNewShape(undefined)}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}>
           <TextEditorContext.Provider value={value}>
