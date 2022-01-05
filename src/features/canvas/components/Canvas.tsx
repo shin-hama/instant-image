@@ -81,9 +81,20 @@ const CreateShape = (
   }
 }
 
-const drawFreeLine = (points: number[]) => {
+const drawFreeLine = (
+  points: number[],
+  config: Konva.ShapeConfig = {
+    draggable: true,
+  }
+) => {
   return (
-    <Line points={points} mode="source-over" stroke="blue" strokeWidth={4} />
+    <Line
+      points={points}
+      mode="source-over"
+      stroke="blue"
+      strokeWidth={4}
+      {...config}
+    />
   )
 }
 
