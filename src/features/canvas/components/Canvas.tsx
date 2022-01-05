@@ -6,6 +6,7 @@ import {
   Line,
   Ellipse,
   Image as KonvaImage,
+  Transformer,
 } from 'react-konva'
 import Konva from 'konva'
 
@@ -153,6 +154,7 @@ export const Canvas = () => {
   const edit = React.useContext(TextEditorContext)
   const [absPos, setAbsPos] = React.useState<Vector2d>()
   const stageRef = React.useContext(StageRef)
+  const transformerRef = React.useRef<Konva.Transformer>(null)
 
   React.useEffect(() => {
     if (pasteData !== undefined) {
@@ -237,6 +239,13 @@ export const Canvas = () => {
     }
   }, [stageRef])
 
+  const testRef = React.useRef<Konva.Rect>(null)
+  React.useEffect(() => {
+    if (transformerRef.current && testRef.current) {
+      transformerRef.current.nodes([testRef.current])
+    }
+  }, [])
+
   return (
     <TextEditorContext.Consumer>
       {(value) => (
@@ -252,9 +261,19 @@ export const Canvas = () => {
           <TextEditorContext.Provider value={value}>
             <Layer>
               {background}
+              <Rect
+                ref={testRef}
+                x={100}
+                y={100}
+                width={200}
+                height={200}
+                fill="gray"
+                stroke="blue"
+              />
               <TextBlock point={{ x: 200, y: 200 }} />
               {React.Children.toArray(konvaItems).map((item) => item)}
               {newShape}
+              <Transformer ref={transformerRef} />
             </Layer>
           </TextEditorContext.Provider>
         </Stage>
