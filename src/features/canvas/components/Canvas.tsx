@@ -255,8 +255,11 @@ export const Canvas = () => {
   }, [stageRef])
 
   const handleClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
-    console.log(e)
     if (transformerRef.current === null) {
+      return
+    }
+
+    if (shapeType !== 'Select') {
       return
     }
 
@@ -290,15 +293,6 @@ export const Canvas = () => {
           <TextEditorContext.Provider value={value}>
             <Layer>
               {background}
-              <Rect
-                ref={testRef}
-                x={100}
-                y={100}
-                width={200}
-                height={200}
-                fill="gray"
-                stroke="blue"
-              />
               {React.Children.toArray(konvaItems).map((item) => item)}
               {newShape}
               <Transformer ref={transformerRef} />
