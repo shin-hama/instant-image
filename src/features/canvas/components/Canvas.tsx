@@ -199,7 +199,29 @@ export const Canvas = () => {
       setStart(pos)
     }
   }
-  const handleMouseMove = (event: Konva.KonvaEventObject<MouseEvent>) => {
+  const handleTouchStart = (event: Konva.KonvaEventObject<TouchEvent>) => {
+    const pos = event.target.getStage()?.getPointerPosition()
+    if (pos) {
+      if (shapeType === 'Text') {
+        const { clientX, clientY } = event.evt.touches[0]
+        setAbsPos({
+          x: clientX,
+          y: clientY,
+        })
+      } else if (shapeType === 'Free') {
+        setFreePoints((prev) => [pos.x, pos.y, pos.x, pos.y])
+        return
+      }
+
+      const shape = CreateShape(shapeType, pos, pos)
+      setNewShape(shape)
+      setStart(pos)
+    }
+  }
+
+  const handleMouseMove = (
+    event: Konva.KonvaEventObject<MouseEvent | TouchEvent>
+  ) => {
     const pos = event.target.getStage()?.getPointerPosition()
     if (pos && newShape) {
       if (shapeType === 'Free') {
@@ -211,7 +233,10 @@ export const Canvas = () => {
       setNewShape(shape)
     }
   }
-  const handleMouseUp = (event: Konva.KonvaEventObject<MouseEvent>) => {
+
+  const handleMouseUp = (
+    event: Konva.KonvaEventObject<MouseEvent | TouchEvent>
+  ) => {
     if (shapeType === 'Text') {
       if (absPos && stageRef?.current) {
         edit({
@@ -282,13 +307,17 @@ export const Canvas = () => {
       {(value) => (
         <Stage
           ref={stageRef}
+          preventDefault
           width={1000}
           height={1000}
           onMouseDown={handleMouseDown}
+          onTouchStart={handleTouchStart}
           // Prevent to create a small shape on dragging is started when set Shape type is not "select"
           onDragStart={() => newShape && setNewShape(undefined)}
           onMouseMove={handleMouseMove}
+          onTouchMove={handleMouseMove}
           onMouseUp={handleMouseUp}
+          onTouchEnd={handleMouseUp}
           onClick={handleClick}>
           <TextEditorContext.Provider value={value}>
             <Layer>
