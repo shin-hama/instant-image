@@ -73,7 +73,6 @@ export const TextEditorProvider: React.FC = ({ children }) => {
     }
   }, [reject, handleClose, value])
 
-  console.log(options)
   const inputRef = React.useRef<HTMLInputElement>()
   const handleComplete = React.useCallback(() => {
     console.log(inputRef.current?.getBoundingClientRect())
@@ -99,7 +98,7 @@ export const TextEditorProvider: React.FC = ({ children }) => {
 
   const handleBlur = () => {
     // When focus is out
-    // handleComplete()
+    handleComplete()
   }
 
   return (

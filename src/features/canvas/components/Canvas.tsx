@@ -6,6 +6,7 @@ import {
   Line,
   Ellipse,
   Image as KonvaImage,
+  Transformer,
 } from 'react-konva'
 import Konva from 'konva'
 
@@ -24,6 +25,17 @@ const CreateShape = (
     draggable: true,
   }
 ) => {
+  const handleTransformEnd = (e: Konva.KonvaEventObject<Event>) => {
+    const node = e.target
+
+    const scaleX = node.scaleX()
+    const scaleY = node.scaleY()
+    node.scaleX(1)
+    node.scaleY(1)
+
+    node.width(node.width() * scaleX)
+    node.height(node.height() * scaleY)
+  }
   switch (shape) {
     case 'Circle': {
       const center = {
@@ -42,6 +54,7 @@ const CreateShape = (
           radiusY={radius.y}
           fill="gray"
           stroke="blue"
+          onTransformEnd={handleTransformEnd}
           {...config}
         />
       )
@@ -63,6 +76,7 @@ const CreateShape = (
           height={widthHeight.y}
           fill="gray"
           stroke="blue"
+          onTransformEnd={handleTransformEnd}
           {...config}
         />
       )
@@ -73,6 +87,7 @@ const CreateShape = (
           points={[p1.x, p1.y, p2.x, p2.y]}
           stroke="blue"
           strokeWidth={4}
+          onTransformEnd={handleTransformEnd}
           {...config}
         />
       )
@@ -153,6 +168,7 @@ export const Canvas = () => {
   const edit = React.useContext(TextEditorContext)
   const [absPos, setAbsPos] = React.useState<Vector2d>()
   const stageRef = React.useContext(StageRef)
+  const transformerRef = React.useRef<Konva.Transformer>(null)
 
   React.useEffect(() => {
     if (pasteData !== undefined) {
@@ -232,10 +248,34 @@ export const Canvas = () => {
       const rect = CreateShape('Rect', { x: 0, y: 0 }, stageEnd, {
         fill: 'white',
         stroke: 'transparent',
+        listening: false,
       })
       setBackground(rect)
     }
   }, [stageRef])
+
+  const handleClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
+    if (transformerRef.current === null) {
+      return
+    }
+
+    if (shapeType !== 'Select') {
+      return
+    }
+
+    if (e.target === e.target.getStage()) {
+      transformerRef.current.nodes([])
+      return
+    }
+    transformerRef.current.nodes([e.target])
+  }
+
+  const testRef = React.useRef<Konva.Rect>(null)
+  React.useEffect(() => {
+    if (transformerRef.current && testRef.current) {
+      transformerRef.current.nodes([testRef.current])
+    }
+  }, [])
 
   return (
     <TextEditorContext.Consumer>
@@ -248,13 +288,14 @@ export const Canvas = () => {
           // Prevent to create a small shape on dragging is started when set Shape type is not "select"
           onDragStart={() => newShape && setNewShape(undefined)}
           onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}>
+          onMouseUp={handleMouseUp}
+          onClick={handleClick}>
           <TextEditorContext.Provider value={value}>
             <Layer>
               {background}
-              <TextBlock point={{ x: 200, y: 200 }} />
               {React.Children.toArray(konvaItems).map((item) => item)}
               {newShape}
+              <Transformer ref={transformerRef} />
             </Layer>
           </TextEditorContext.Provider>
         </Stage>
