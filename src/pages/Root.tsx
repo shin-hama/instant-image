@@ -24,7 +24,6 @@ const Root = () => {
         <Navbar />
         <Box
           onCopy={() => console.log('handlePaste')}
-          sx={{ margin: 10, border: 'black' }}
           onPaste={() => console.log('test')}>
           <Canvas />
         </Box>
