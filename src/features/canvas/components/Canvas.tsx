@@ -289,6 +289,7 @@ export const Canvas = () => {
   }, [stageRef])
 
   const handleClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
+    console.log(e)
     if (transformerRef.current === null) {
       return
     }
@@ -327,7 +328,8 @@ export const Canvas = () => {
           onTouchMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onTouchEnd={handleMouseUp}
-          onClick={handleClick}>
+          onClick={handleClick}
+          onTap={handleClick}>
           <TextEditorContext.Provider value={value}>
             <Layer>
               {background}
