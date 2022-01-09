@@ -17,14 +17,13 @@ import TextBlock from './TextBlock'
 import { TextEditorContext } from 'contexts/TextEditorProvider'
 import { StageRef } from 'contexts/StageRefProvider'
 import { useWindowSize } from '../hooks/useWindowSize'
+import { ColorContext } from '../contexts/ColorProvider'
 
 const CreateShape = (
   shape: string,
   p1: Vector2d,
   p2: Vector2d,
-  config: Konva.ShapeConfig = {
-    draggable: true,
-  }
+  optionalConfig: Konva.ShapeConfig = {}
 ) => {
   const handleTransformEnd = (e: Konva.KonvaEventObject<Event>) => {
     const node = e.target
@@ -37,6 +36,12 @@ const CreateShape = (
     node.width(node.width() * scaleX)
     node.height(node.height() * scaleY)
   }
+
+  const config = {
+    draggable: true,
+    ...optionalConfig,
+  }
+
   switch (shape) {
     case 'Circle': {
       const center = {
@@ -171,6 +176,8 @@ export const Canvas = () => {
   const stageRef = React.useContext(StageRef)
   const transformerRef = React.useRef<Konva.Transformer>(null)
 
+  const { color } = React.useContext(ColorContext)
+
   const windowSize = useWindowSize()
 
   React.useEffect(() => {
@@ -197,8 +204,6 @@ export const Canvas = () => {
         return
       }
 
-      const shape = CreateShape(shapeType, pos, pos)
-      setNewShape(shape)
       setStart(pos)
     }
   }
@@ -216,8 +221,6 @@ export const Canvas = () => {
         return
       }
 
-      const shape = CreateShape(shapeType, pos, pos)
-      setNewShape(shape)
       setStart(pos)
     }
 
@@ -228,13 +231,13 @@ export const Canvas = () => {
     event: Konva.KonvaEventObject<MouseEvent | TouchEvent>
   ) => {
     const pos = event.target.getStage()?.getPointerPosition()
-    if (pos && newShape) {
+    if (pos) {
       if (shapeType === 'Free') {
         setFreePoints((prev) => [...prev, pos.x, pos.y])
         return
       }
 
-      const shape = CreateShape(shapeType, start, pos)
+      const shape = CreateShape(shapeType, start, pos, { fill: color })
       setNewShape(shape)
     }
 
