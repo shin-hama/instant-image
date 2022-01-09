@@ -7,9 +7,11 @@ import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import Toolbar from '@mui/material/Toolbar'
+import Menu from '@mui/material/Menu'
 
 import { ShapeTypeContext } from 'pages/Root'
 import { StageRef } from 'contexts/StageRefProvider'
+import ColorPicker from './ColorPicker'
 
 const FlexDiv = styled('div')((theme) => ({
   flexGrow: 1,
@@ -33,6 +35,13 @@ const Navbar = () => {
     }
   }
 
+  const [openMenu, setOpenMenu] = React.useState(false)
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
+
+  const handleOpenMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setOpenMenu(true)
+    setAnchorEl(event.currentTarget)
+  }
   return (
     <AppBar>
       <Toolbar>
@@ -53,6 +62,17 @@ const Navbar = () => {
           </Select>
         </FormControl>
         <FlexDiv />
+        <Button variant="contained" onClick={handleOpenMenu}>
+          color
+        </Button>
+        <Menu
+          open={openMenu}
+          anchorEl={anchorEl}
+          onClose={() => setOpenMenu(false)}>
+          <MenuItem>
+            <ColorPicker />
+          </MenuItem>
+        </Menu>
         <Button onClick={handleDownload} variant="contained">
           Download
         </Button>
