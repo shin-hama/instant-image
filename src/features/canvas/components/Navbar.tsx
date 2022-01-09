@@ -69,7 +69,13 @@ const Navbar = () => {
           open={openMenu}
           anchorEl={anchorEl}
           onClose={() => setOpenMenu(false)}>
-          <MenuItem>
+          <MenuItem
+            disableRipple
+            sx={{
+              '&:hover': {
+                background: 'none',
+              },
+            }}>
             <ColorPicker />
           </MenuItem>
         </Menu>

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ColorResult, TwitterPicker } from 'react-color'
+import { ColorResult, CirclePicker } from 'react-color'
 import { ColorContext } from '../contexts/ColorProvider'
 
 const ColorPicker = () => {
@@ -12,7 +12,7 @@ const ColorPicker = () => {
     setColor(color.hex)
   }
 
-  return <TwitterPicker color={color} onChangeComplete={handleChangeComplete} />
+  return <CirclePicker color={color} onChangeComplete={handleChangeComplete} />
 }
 
 export default ColorPicker
