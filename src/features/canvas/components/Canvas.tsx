@@ -175,6 +175,7 @@ export const Canvas = () => {
   const [absPos, setAbsPos] = React.useState<Vector2d>()
   const stageRef = React.useContext(StageRef)
   const transformerRef = React.useRef<Konva.Transformer>(null)
+  const [drawing, setDrawing] = React.useState(false)
 
   const { color } = React.useContext(ColorContext)
 
@@ -201,9 +202,9 @@ export const Canvas = () => {
         })
       } else if (shapeType === 'Free') {
         setFreePoints((prev) => [pos.x, pos.y, pos.x, pos.y])
-        return
       }
 
+      setDrawing(true)
       setStart(pos)
     }
   }
@@ -218,9 +219,9 @@ export const Canvas = () => {
         })
       } else if (shapeType === 'Free') {
         setFreePoints((prev) => [pos.x, pos.y, pos.x, pos.y])
-        return
       }
 
+      setDrawing(true)
       setStart(pos)
     }
 
@@ -231,7 +232,7 @@ export const Canvas = () => {
     event: Konva.KonvaEventObject<MouseEvent | TouchEvent>
   ) => {
     const pos = event.target.getStage()?.getPointerPosition()
-    if (pos) {
+    if (pos && drawing) {
       if (shapeType === 'Free') {
         setFreePoints((prev) => [...prev, pos.x, pos.y])
         return
@@ -263,6 +264,7 @@ export const Canvas = () => {
     if (newShape) {
       setKonvaItems((prev) => [...prev, newShape])
     }
+    setDrawing(false)
     setNewShape(undefined)
     setStart({ x: 0, y: 0 })
 
