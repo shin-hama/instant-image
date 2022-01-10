@@ -12,6 +12,7 @@ import Menu from '@mui/material/Menu'
 import { ShapeTypeContext } from 'pages/Root'
 import { StageRef } from 'contexts/StageRefProvider'
 import ColorPicker from './ColorPicker'
+import { useConfigEditor } from 'features/config/contexts/ConfigEditor'
 
 const FlexDiv = styled('div')((theme) => ({
   flexGrow: 1,
@@ -43,9 +44,10 @@ const Navbar = () => {
     setAnchorEl(event.currentTarget)
   }
 
-  const [openLine, setOpenLine] = React.useState(false)
+  const setConfigEditor = useConfigEditor()
+
   const handleOpenLineEditor = () => {
-    setOpenLine(true)
+    setConfigEditor('Line')
   }
 
   return (
@@ -68,7 +70,7 @@ const Navbar = () => {
           </Select>
         </FormControl>
         <FlexDiv />
-        <Button variant="contained" onClick={handleOpenMenu}>
+        <Button variant="contained" onClick={handleOpenLineEditor}>
           line
         </Button>
         <Button variant="contained" onClick={handleOpenMenu}>

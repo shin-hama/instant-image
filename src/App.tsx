@@ -7,6 +7,7 @@ import { TextEditorProvider } from 'contexts/TextEditorProvider'
 import Root from 'pages/Root'
 import { ColorProvider } from 'features/canvas/contexts/ColorProvider'
 import { LineConfigProvider } from 'features/config/contexts/LineConfigProvider'
+import { ConfigEditorProvider } from 'features/config/contexts/ConfigEditor'
 
 const customTheme = createTheme()
 
@@ -18,7 +19,9 @@ function App() {
           <PasteDataProvider>
             <StageRefProvider>
               <TextEditorProvider>
-                <Root />
+                <ConfigEditorProvider>
+                  <Root />
+                </ConfigEditorProvider>
               </TextEditorProvider>
             </StageRefProvider>
           </PasteDataProvider>
