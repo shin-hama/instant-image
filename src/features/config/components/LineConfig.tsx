@@ -11,7 +11,9 @@ import ColorPicker from 'features/config/components/ColorPicker'
 
 const LineConfigEditor = () => {
   const [config, setConfig] = useLineConfig()
-  const [color, setColor] = React.useState('#000000')
+  const [color, setColor] = React.useState(
+    config.stroke?.toString() || '#000000'
+  )
   const [width, setWidth] = React.useState(config.strokeWidth || 1)
 
   const handleWidthChange = (e: SelectChangeEvent<number>) => {

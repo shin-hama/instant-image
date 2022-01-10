@@ -5,8 +5,8 @@ import { useShapeConfig } from 'features/config/contexts/ShapeConfigProvider'
 import ColorPicker from 'features/config/components/ColorPicker'
 
 const ShapeConfigEditor = () => {
-  const [, setConfig] = useShapeConfig()
-  const [color, setColor] = React.useState('#000000')
+  const [config, setConfig] = useShapeConfig()
+  const [color, setColor] = React.useState(config.fill || '#000000')
 
   React.useEffect(() => {
     setConfig((prev) => ({
