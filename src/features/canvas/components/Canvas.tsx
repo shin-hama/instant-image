@@ -18,11 +18,13 @@ import { TextEditorContext } from 'contexts/TextEditorProvider'
 import { StageRef } from 'contexts/StageRefProvider'
 import { useWindowSize } from '../hooks/useWindowSize'
 import { ColorContext } from '../contexts/ColorProvider'
+import { useLineConfig } from '../hooks/useLineConfig'
 
 const CreateShape = (
   shape: string,
   p1: Vector2d,
   p2: Vector2d,
+  lineConfig: Konva.LineConfig = {},
   optionalConfig: Konva.ShapeConfig = {}
 ) => {
   const handleTransformEnd = (e: Konva.KonvaEventObject<Event>) => {
@@ -61,6 +63,7 @@ const CreateShape = (
           fill="gray"
           stroke="blue"
           onTransformEnd={handleTransformEnd}
+          {...lineConfig}
           {...config}
         />
       )
@@ -83,6 +86,7 @@ const CreateShape = (
           fill="gray"
           stroke="blue"
           onTransformEnd={handleTransformEnd}
+          {...lineConfig}
           {...config}
         />
       )
@@ -94,6 +98,7 @@ const CreateShape = (
           stroke="blue"
           strokeWidth={4}
           onTransformEnd={handleTransformEnd}
+          {...lineConfig}
           {...config}
         />
       )
@@ -102,8 +107,9 @@ const CreateShape = (
   }
 }
 
-const drawFreeLine = (
+const DrawFreeLine = (
   points: number[],
+  lineConfig: Konva.LineConfig,
   config: Konva.ShapeConfig = {
     draggable: true,
   }
@@ -114,6 +120,7 @@ const drawFreeLine = (
       mode="source-over"
       stroke="blue"
       strokeWidth={4}
+      {...lineConfig}
       {...config}
     />
   )
@@ -177,6 +184,8 @@ export const Canvas = () => {
   const transformerRef = React.useRef<Konva.Transformer>(null)
   const [drawing, setDrawing] = React.useState(false)
 
+  const [lineConfig] = useLineConfig()
+
   const { color } = React.useContext(ColorContext)
 
   const windowSize = useWindowSize()
@@ -238,7 +247,9 @@ export const Canvas = () => {
         return
       }
 
-      const shape = CreateShape(shapeType, start, pos, { fill: color })
+      const shape = CreateShape(shapeType, start, pos, lineConfig, {
+        fill: color,
+      })
       setNewShape(shape)
     }
 
@@ -272,9 +283,9 @@ export const Canvas = () => {
   }
 
   React.useEffect(() => {
-    const line = drawFreeLine(freePoints)
+    const line = DrawFreeLine(freePoints, lineConfig)
     setNewShape(line)
-  }, [freePoints])
+  }, [freePoints, lineConfig])
 
   const [background, setBackground] = React.useState<React.ReactNode>()
 
@@ -284,11 +295,17 @@ export const Canvas = () => {
         x: stageRef.current.width(),
         y: stageRef.current.height(),
       }
-      const rect = CreateShape('Rect', { x: 0, y: 0 }, stageEnd, {
-        fill: 'white',
-        stroke: 'transparent',
-        listening: false,
-      })
+      const rect = CreateShape(
+        'Rect',
+        { x: 0, y: 0 },
+        stageEnd,
+        {},
+        {
+          fill: 'white',
+          stroke: 'transparent',
+          listening: false,
+        }
+      )
       setBackground(rect)
     }
   }, [stageRef])
