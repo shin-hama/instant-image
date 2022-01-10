@@ -274,14 +274,17 @@ export const Canvas = () => {
     }
     setDrawing(false)
     setNewShape(undefined)
+    setFreePoints([])
     setStart({ x: 0, y: 0 })
 
     event.evt.preventDefault()
   }
 
   React.useEffect(() => {
-    const line = DrawFreeLine(freePoints, lineConfig)
-    setNewShape(line)
+    if (freePoints.length > 0) {
+      const line = DrawFreeLine(freePoints, lineConfig)
+      setNewShape(line)
+    }
   }, [freePoints, lineConfig])
 
   const [background, setBackground] = React.useState<React.ReactNode>()
