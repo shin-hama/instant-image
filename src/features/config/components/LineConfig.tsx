@@ -6,7 +6,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
-import { useLineConfig } from 'features/config/hooks/useLineConfig'
+import { useLineConfig } from 'features/config/contexts/LineConfigProvider'
 import ColorPicker from 'features/config/components/ColorPicker'
 
 const LineConfigEditor = () => {

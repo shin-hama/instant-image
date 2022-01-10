@@ -17,14 +17,14 @@ import TextBlock from './TextBlock'
 import { TextEditorContext } from 'contexts/TextEditorProvider'
 import { StageRef } from 'contexts/StageRefProvider'
 import { useWindowSize } from '../hooks/useWindowSize'
-import { ColorContext } from '../contexts/ColorProvider'
-import { useLineConfig } from '../../config/hooks/useLineConfig'
+import { useLineConfig } from 'features/config/contexts/LineConfigProvider'
+import { useShapeConfig } from 'features/config/contexts/ShapeConfigProvider'
 
 const CreateShape = (
   shape: string,
   p1: Vector2d,
   p2: Vector2d,
-  lineConfig: Konva.LineConfig = {},
+  lineConfig: Konva.ShapeConfig = {},
   optionalConfig: Konva.ShapeConfig = {}
 ) => {
   const handleTransformEnd = (e: Konva.KonvaEventObject<Event>) => {
@@ -109,7 +109,7 @@ const CreateShape = (
 
 const DrawFreeLine = (
   points: number[],
-  lineConfig: Konva.LineConfig,
+  lineConfig: Konva.ShapeConfig,
   config: Konva.ShapeConfig = {
     draggable: true,
   }
@@ -185,8 +185,7 @@ export const Canvas = () => {
   const [drawing, setDrawing] = React.useState(false)
 
   const [lineConfig] = useLineConfig()
-
-  const { color } = React.useContext(ColorContext)
+  const [shapeConfig] = useShapeConfig()
 
   const windowSize = useWindowSize()
 
@@ -247,9 +246,7 @@ export const Canvas = () => {
         return
       }
 
-      const shape = CreateShape(shapeType, start, pos, lineConfig, {
-        fill: color,
-      })
+      const shape = CreateShape(shapeType, start, pos, lineConfig, shapeConfig)
       setNewShape(shape)
     }
 

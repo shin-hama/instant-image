@@ -7,11 +7,9 @@ import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import Toolbar from '@mui/material/Toolbar'
-import Menu from '@mui/material/Menu'
 
 import { ShapeTypeContext } from 'pages/Root'
 import { StageRef } from 'contexts/StageRefProvider'
-import ColorPicker from './ColorPicker'
 import { useConfigEditor } from 'features/config/contexts/ConfigEditor'
 
 const FlexDiv = styled('div')((theme) => ({
@@ -36,15 +34,11 @@ const Navbar = () => {
     }
   }
 
-  const [openMenu, setOpenMenu] = React.useState(false)
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
-
-  const handleOpenMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setOpenMenu(true)
-    setAnchorEl(event.currentTarget)
-  }
-
   const setConfigEditor = useConfigEditor()
+
+  const handleOpenShapeEditor = () => {
+    setConfigEditor('Shape')
+  }
 
   const handleOpenLineEditor = () => {
     setConfigEditor('Line')
@@ -73,23 +67,9 @@ const Navbar = () => {
         <Button variant="contained" onClick={handleOpenLineEditor}>
           line
         </Button>
-        <Button variant="contained" onClick={handleOpenMenu}>
-          color
+        <Button variant="contained" onClick={handleOpenShapeEditor}>
+          shape
         </Button>
-        <Menu
-          open={openMenu}
-          anchorEl={anchorEl}
-          onClose={() => setOpenMenu(false)}>
-          <MenuItem
-            disableRipple
-            sx={{
-              '&:hover': {
-                background: 'none',
-              },
-            }}>
-            <ColorPicker />
-          </MenuItem>
-        </Menu>
         <Button onClick={handleDownload} variant="contained">
           Download
         </Button>

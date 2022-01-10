@@ -1,9 +1,11 @@
 import * as React from 'react'
 import Drawer from '@mui/material/Drawer'
 import LineConfigEditor from '../components/LineConfig'
+import ShapeConfigEditor from '../components/ShapeConfig'
 
 const Editors = {
   Line: <LineConfigEditor />,
+  Shape: <ShapeConfigEditor />,
 }
 
 type EditorType = keyof typeof Editors
