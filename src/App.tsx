@@ -6,7 +6,7 @@ import { StageRefProvider } from 'contexts/StageRefProvider'
 import { TextEditorProvider } from 'contexts/TextEditorProvider'
 import Root from 'pages/Root'
 import { ColorProvider } from 'features/canvas/contexts/ColorProvider'
-import { LineConfigProvider } from 'features/canvas/contexts/LineConfigProvider'
+import { LineConfigProvider } from 'features/config/contexts/LineConfigProvider'
 
 const customTheme = createTheme()
 

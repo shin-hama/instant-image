@@ -12,7 +12,6 @@ import Menu from '@mui/material/Menu'
 import { ShapeTypeContext } from 'pages/Root'
 import { StageRef } from 'contexts/StageRefProvider'
 import ColorPicker from './ColorPicker'
-import { useLineConfig } from '../hooks/useLineConfig'
 
 const FlexDiv = styled('div')((theme) => ({
   flexGrow: 1,
@@ -44,18 +43,11 @@ const Navbar = () => {
     setAnchorEl(event.currentTarget)
   }
 
-  const [, setLineConfig] = useLineConfig()
-  const [lineWidth, setLineWidth] = React.useState(1)
-  const handleLineWidthChange = (e: SelectChangeEvent<number>) => {
-    setLineWidth(e.target.value as number)
+  const [openLine, setOpenLine] = React.useState(false)
+  const handleOpenLineEditor = () => {
+    setOpenLine(true)
   }
 
-  React.useEffect(() => {
-    setLineConfig((prev) => ({
-      ...prev,
-      strokeWidth: lineWidth,
-    }))
-  }, [lineWidth, setLineConfig])
   return (
     <AppBar>
       <Toolbar>
@@ -76,21 +68,9 @@ const Navbar = () => {
           </Select>
         </FormControl>
         <FlexDiv />
-        <FormControl>
-          <InputLabel id="line-width-label">line</InputLabel>
-          <Select
-            labelId="line-width-label"
-            id="line-width"
-            value={lineWidth}
-            label="Line"
-            onChange={handleLineWidthChange}>
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
-              <MenuItem key={item} value={item}>
-                {item}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <Button variant="contained" onClick={handleOpenMenu}>
+          line
+        </Button>
         <Button variant="contained" onClick={handleOpenMenu}>
           color
         </Button>

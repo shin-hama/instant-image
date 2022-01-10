@@ -18,7 +18,7 @@ import { TextEditorContext } from 'contexts/TextEditorProvider'
 import { StageRef } from 'contexts/StageRefProvider'
 import { useWindowSize } from '../hooks/useWindowSize'
 import { ColorContext } from '../contexts/ColorProvider'
-import { useLineConfig } from '../hooks/useLineConfig'
+import { useLineConfig } from '../../config/hooks/useLineConfig'
 
 const CreateShape = (
   shape: string,
@@ -311,7 +311,6 @@ export const Canvas = () => {
   }, [stageRef])
 
   const handleClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
-    console.log(e)
     if (transformerRef.current === null) {
       return
     }
