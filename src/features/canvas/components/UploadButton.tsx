@@ -24,7 +24,10 @@ const UploadButton = () => {
   }
 
   return (
-    <Fab component="label" sx={{ position: 'absolute', bottom: 40, right: 40 }}>
+    <Fab
+      color="primary"
+      component="label"
+      sx={{ position: 'absolute', bottom: 40, right: 40 }}>
       <FontAwesomeIcon icon={faPlus} />
       <input
         accept="image/*"
