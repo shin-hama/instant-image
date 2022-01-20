@@ -10,7 +10,7 @@ import Toolbar from '@mui/material/Toolbar'
 
 import { ShapeTypeContext } from 'pages/Root'
 import { StageRef } from 'contexts/StageRefProvider'
-import { useConfigEditor } from 'features/config/contexts/ConfigEditor'
+import { useConfigEditor } from 'features/config/contexts/ConfigEditorProvider'
 
 const FlexDiv = styled('div')((theme) => ({
   flexGrow: 1,
@@ -45,7 +45,7 @@ const Navbar = () => {
   }
 
   return (
-    <AppBar>
+    <AppBar sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
       <Toolbar>
         <FormControl>
           <InputLabel id="shape-select-label">Shape</InputLabel>

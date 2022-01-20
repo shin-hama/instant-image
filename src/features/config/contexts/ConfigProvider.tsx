@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { ConfigEditorProvider } from './ConfigEditor'
+import { ConfigEditorProvider } from './ConfigEditorProvider'
 import { LineConfigProvider } from './LineConfigProvider'
 import { ShapeConfigProvider } from './ShapeConfigProvider'
 

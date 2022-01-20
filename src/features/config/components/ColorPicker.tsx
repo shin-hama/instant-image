@@ -1,4 +1,6 @@
 import * as React from 'react'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { ColorResult, CirclePicker } from 'react-color'
 
 type Props = {
@@ -13,7 +15,12 @@ const ColorPicker: React.FC<Props> = ({ color, setColor }) => {
     setColor(color.hex)
   }
 
-  return <CirclePicker color={color} onChangeComplete={handleChangeComplete} />
+  return (
+    <Stack spacing={1}>
+      <Typography>Color: {color}</Typography>
+      <CirclePicker color={color} onChangeComplete={handleChangeComplete} />
+    </Stack>
+  )
 }
 
 export default ColorPicker
