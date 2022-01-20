@@ -19,6 +19,8 @@ import { StageRef } from 'contexts/StageRefProvider'
 import { useWindowSize } from '../hooks/useWindowSize'
 import { useLineConfig } from 'features/config/contexts/LineConfigProvider'
 import { useShapeConfig } from 'features/config/contexts/ShapeConfigProvider'
+import UploadButton from './UploadButton'
+import { useShapes } from '../contexts/ShapesProvider'
 
 const CreateShape = (
   shape: string,
@@ -175,7 +177,7 @@ export const Canvas = () => {
     x: 0,
     y: 0,
   })
-  const [konvaItems, setKonvaItems] = React.useState<React.ReactNodeArray>([])
+  const [shapes, shapesActions] = useShapes()
   const [freePoints, setFreePoints] = React.useState<number[]>([])
   const pasteData = React.useContext(PasteData)
   const edit = React.useContext(TextEditorContext)
@@ -193,11 +195,11 @@ export const Canvas = () => {
     if (pasteData !== undefined) {
       const func = async () => {
         const obj = await PasteObject(pasteData)
-        setKonvaItems((prev) => [...prev, obj])
+        shapesActions.push(obj)
       }
       func()
     }
-  }, [pasteData])
+  }, [pasteData, shapesActions])
 
   const handleMouseDown = (event: Konva.KonvaEventObject<MouseEvent>) => {
     const pos = event.target.getStage()?.getPointerPosition()
@@ -264,13 +266,13 @@ export const Canvas = () => {
         }).then((result) => {
           if (result) {
             const shape = <TextBlock point={start} value={result} />
-            setKonvaItems((prev) => [...prev, shape])
+            shapesActions.push(shape)
           }
         })
       }
     }
     if (newShape) {
-      setKonvaItems((prev) => [...prev, newShape])
+      shapesActions.push(newShape)
     }
     setDrawing(false)
     setNewShape(undefined)
@@ -334,33 +336,36 @@ export const Canvas = () => {
   }, [])
 
   return (
-    <TextEditorContext.Consumer>
-      {(value) => (
-        <Stage
-          ref={stageRef}
-          preventDefault
-          width={windowSize.width}
-          height={windowSize.height}
-          onMouseDown={handleMouseDown}
-          onTouchStart={handleTouchStart}
-          // Prevent to create a small shape on dragging is started when set Shape type is not "select"
-          onDragStart={() => newShape && setNewShape(undefined)}
-          onMouseMove={handleMouseMove}
-          onTouchMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onTouchEnd={handleMouseUp}
-          onClick={handleClick}
-          onTap={handleClick}>
-          <TextEditorContext.Provider value={value}>
-            <Layer>
-              {background}
-              {React.Children.toArray(konvaItems).map((item) => item)}
-              {newShape}
-              <Transformer ref={transformerRef} />
-            </Layer>
-          </TextEditorContext.Provider>
-        </Stage>
-      )}
-    </TextEditorContext.Consumer>
+    <>
+      <TextEditorContext.Consumer>
+        {(value) => (
+          <Stage
+            ref={stageRef}
+            preventDefault
+            width={windowSize.width}
+            height={windowSize.height}
+            onMouseDown={handleMouseDown}
+            onTouchStart={handleTouchStart}
+            // Prevent to create a small shape on dragging is started when set Shape type is not "select"
+            onDragStart={() => newShape && setNewShape(undefined)}
+            onMouseMove={handleMouseMove}
+            onTouchMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onTouchEnd={handleMouseUp}
+            onClick={handleClick}
+            onTap={handleClick}>
+            <TextEditorContext.Provider value={value}>
+              <Layer>
+                {background}
+                {React.Children.toArray(shapes).map((item) => item)}
+                {newShape}
+                <Transformer ref={transformerRef} />
+              </Layer>
+            </TextEditorContext.Provider>
+          </Stage>
+        )}
+      </TextEditorContext.Consumer>
+      <UploadButton />
+    </>
   )
 }

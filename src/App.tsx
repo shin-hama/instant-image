@@ -6,6 +6,7 @@ import { StageRefProvider } from 'contexts/StageRefProvider'
 import { TextEditorProvider } from 'contexts/TextEditorProvider'
 import Root from 'pages/Root'
 import { ConfigProvider } from 'features/config/contexts/ConfigProvider'
+import { ShapesProvider } from 'features/canvas/contexts/ShapesProvider'
 
 const customTheme = createTheme()
 
@@ -16,7 +17,9 @@ function App() {
         <StageRefProvider>
           <TextEditorProvider>
             <ConfigProvider>
-              <Root />
+              <ShapesProvider>
+                <Root />
+              </ShapesProvider>
             </ConfigProvider>
           </TextEditorProvider>
         </StageRefProvider>
