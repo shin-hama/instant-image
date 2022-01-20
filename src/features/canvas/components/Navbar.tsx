@@ -7,11 +7,10 @@ import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import Toolbar from '@mui/material/Toolbar'
-import Menu from '@mui/material/Menu'
 
 import { ShapeTypeContext } from 'pages/Root'
 import { StageRef } from 'contexts/StageRefProvider'
-import ColorPicker from './ColorPicker'
+import { useConfigEditor } from 'features/config/contexts/ConfigEditorProvider'
 
 const FlexDiv = styled('div')((theme) => ({
   flexGrow: 1,
@@ -35,15 +34,18 @@ const Navbar = () => {
     }
   }
 
-  const [openMenu, setOpenMenu] = React.useState(false)
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
+  const setConfigEditor = useConfigEditor()
 
-  const handleOpenMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setOpenMenu(true)
-    setAnchorEl(event.currentTarget)
+  const handleOpenShapeEditor = () => {
+    setConfigEditor('Shape')
   }
+
+  const handleOpenLineEditor = () => {
+    setConfigEditor('Line')
+  }
+
   return (
-    <AppBar>
+    <AppBar sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
       <Toolbar>
         <FormControl>
           <InputLabel id="shape-select-label">Shape</InputLabel>
@@ -62,23 +64,12 @@ const Navbar = () => {
           </Select>
         </FormControl>
         <FlexDiv />
-        <Button variant="contained" onClick={handleOpenMenu}>
-          color
+        <Button variant="contained" onClick={handleOpenLineEditor}>
+          line
         </Button>
-        <Menu
-          open={openMenu}
-          anchorEl={anchorEl}
-          onClose={() => setOpenMenu(false)}>
-          <MenuItem
-            disableRipple
-            sx={{
-              '&:hover': {
-                background: 'none',
-              },
-            }}>
-            <ColorPicker />
-          </MenuItem>
-        </Menu>
+        <Button variant="contained" onClick={handleOpenShapeEditor}>
+          shape
+        </Button>
         <Button onClick={handleDownload} variant="contained">
           Download
         </Button>

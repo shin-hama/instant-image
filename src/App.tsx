@@ -5,22 +5,22 @@ import { PasteDataProvider } from 'contexts/PasteDataProvider'
 import { StageRefProvider } from 'contexts/StageRefProvider'
 import { TextEditorProvider } from 'contexts/TextEditorProvider'
 import Root from 'pages/Root'
-import { ColorProvider } from 'features/canvas/contexts/ColorProvider'
+import { ConfigProvider } from 'features/config/contexts/ConfigProvider'
 
 const customTheme = createTheme()
 
 function App() {
   return (
     <ThemeProvider theme={customTheme}>
-      <ColorProvider>
-        <PasteDataProvider>
-          <StageRefProvider>
-            <TextEditorProvider>
+      <PasteDataProvider>
+        <StageRefProvider>
+          <TextEditorProvider>
+            <ConfigProvider>
               <Root />
-            </TextEditorProvider>
-          </StageRefProvider>
-        </PasteDataProvider>
-      </ColorProvider>
+            </ConfigProvider>
+          </TextEditorProvider>
+        </StageRefProvider>
+      </PasteDataProvider>
     </ThemeProvider>
   )
 }
