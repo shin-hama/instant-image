@@ -323,7 +323,26 @@ export const Canvas = () => {
         listening: false,
       }
     )
-    setBackground(rect)
+
+    const lineStart = {
+      x: windowSize.width / 2,
+      y: 0,
+    }
+    const lineEnd = {
+      x: windowSize.width / 2,
+      y: windowSize.height,
+    }
+    const centerLine = CreateShape('Line', lineStart, lineEnd, {
+      draggable: false,
+      stroke: 'black',
+      strokeWidth: 1,
+    })
+    setBackground(
+      <Group>
+        {rect}
+        {centerLine}
+      </Group>
+    )
   }, [canvasSize.height, canvasSize.width, windowSize.height, windowSize.width])
 
   const handleClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
@@ -371,9 +390,9 @@ export const Canvas = () => {
             <TextEditorContext.Provider value={value}>
               <Layer>
                 <Group
-                  clipX={(windowSize.width - canvasSize.width) / 2}
+                  clipX={windowSize.width / 2 - canvasSize.width}
                   clipY={(windowSize.height - canvasSize.height) / 2}
-                  clipWidth={canvasSize.width}
+                  clipWidth={canvasSize.width * 2}
                   clipHeight={canvasSize.height}>
                   {background}
                   {React.Children.toArray(shapes).map((item) => item)}
