@@ -190,6 +190,21 @@ export const Canvas = () => {
   const [shapeConfig] = useShapeConfig()
 
   const windowSize = useWindowSize()
+  const [canvasSize, setCanvasSize] = React.useState({ width: 0, height: 0 })
+
+  React.useEffect(() => {
+    const widthHeight = 11 / 21
+    const height = windowSize.height * 0.8
+    const width = height * widthHeight
+    if (width > windowSize.width) {
+      console.log('width is over')
+    } else {
+      setCanvasSize({
+        width,
+        height,
+      })
+    }
+  }, [windowSize.height, windowSize.width])
 
   React.useEffect(() => {
     if (pasteData !== undefined) {
@@ -292,25 +307,27 @@ export const Canvas = () => {
   const [background, setBackground] = React.useState<React.ReactNode>()
 
   React.useEffect(() => {
-    if (stageRef?.current) {
-      const stageEnd = {
-        x: stageRef.current.width(),
-        y: stageRef.current.height(),
-      }
-      const rect = CreateShape(
-        'Rect',
-        { x: 0, y: 0 },
-        stageEnd,
-        {},
-        {
-          fill: 'white',
-          stroke: 'transparent',
-          listening: false,
-        }
-      )
-      setBackground(rect)
+    const start = {
+      x: (windowSize.width - canvasSize.width) / 2,
+      y: (windowSize.height - canvasSize.height) / 2,
     }
-  }, [stageRef])
+    const end = {
+      x: (windowSize.width + canvasSize.width) / 2,
+      y: (windowSize.height + canvasSize.height) / 2,
+    }
+    const rect = CreateShape(
+      'Rect',
+      start,
+      end,
+      {},
+      {
+        fill: 'white',
+        stroke: 'transparent',
+        listening: false,
+      }
+    )
+    setBackground(rect)
+  }, [canvasSize.height, canvasSize.width, windowSize.height, windowSize.width])
 
   const handleClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
     if (transformerRef.current === null) {
