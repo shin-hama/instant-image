@@ -19,7 +19,7 @@ const Root = () => {
   const [shapeType, setShapeType] = React.useState('Select')
 
   return (
-    <Box sx={{ background: 'gray' }}>
+    <Box sx={{ background: 'grey' }}>
       <ShapeTypeContext.Provider value={{ shapeType, setShapeType }}>
         <Navbar />
         <Box

@@ -1,5 +1,6 @@
 import * as React from 'react'
 import {
+  Group,
   Stage,
   Layer,
   Rect,
@@ -216,38 +217,33 @@ export const Canvas = () => {
     }
   }, [pasteData, shapesActions])
 
+  const startDrawing = (pos: Vector2d, client: Vector2d) => {
+    if (shapeType === 'Text') {
+      setAbsPos({
+        x: client.x,
+        y: client.y,
+      })
+    } else if (shapeType === 'Free') {
+      setFreePoints((prev) => [pos.x, pos.y, pos.x, pos.y])
+    }
+
+    setDrawing(true)
+    setStart(pos)
+  }
+
   const handleMouseDown = (event: Konva.KonvaEventObject<MouseEvent>) => {
     const pos = event.target.getStage()?.getPointerPosition()
+    const { clientX, clientY } = event.evt
+    console.log(background)
     if (pos) {
-      if (shapeType === 'Text') {
-        const { clientX, clientY } = event.evt
-        setAbsPos({
-          x: clientX,
-          y: clientY,
-        })
-      } else if (shapeType === 'Free') {
-        setFreePoints((prev) => [pos.x, pos.y, pos.x, pos.y])
-      }
-
-      setDrawing(true)
-      setStart(pos)
+      startDrawing(pos, { x: clientX, y: clientY })
     }
   }
   const handleTouchStart = (event: Konva.KonvaEventObject<TouchEvent>) => {
     const pos = event.target.getStage()?.getPointerPosition()
+    const { clientX, clientY } = event.evt.touches[0]
     if (pos) {
-      if (shapeType === 'Text') {
-        const { clientX, clientY } = event.evt.touches[0]
-        setAbsPos({
-          x: clientX,
-          y: clientY,
-        })
-      } else if (shapeType === 'Free') {
-        setFreePoints((prev) => [pos.x, pos.y, pos.x, pos.y])
-      }
-
-      setDrawing(true)
-      setStart(pos)
+      startDrawing(pos, { x: clientX, y: clientY })
     }
 
     event.evt.preventDefault()
@@ -308,12 +304,12 @@ export const Canvas = () => {
 
   React.useEffect(() => {
     const start = {
-      x: (windowSize.width - canvasSize.width) / 2,
-      y: (windowSize.height - canvasSize.height) / 2,
+      x: 0,
+      y: 0,
     }
     const end = {
-      x: (windowSize.width + canvasSize.width) / 2,
-      y: (windowSize.height + canvasSize.height) / 2,
+      x: windowSize.width,
+      y: windowSize.height,
     }
     const rect = CreateShape(
       'Rect',
@@ -321,6 +317,7 @@ export const Canvas = () => {
       end,
       {},
       {
+        draggable: false,
         fill: 'white',
         stroke: 'transparent',
         listening: false,
@@ -373,10 +370,16 @@ export const Canvas = () => {
             onTap={handleClick}>
             <TextEditorContext.Provider value={value}>
               <Layer>
-                {background}
-                {React.Children.toArray(shapes).map((item) => item)}
-                {newShape}
-                <Transformer ref={transformerRef} />
+                <Group
+                  clipX={(windowSize.width - canvasSize.width) / 2}
+                  clipY={(windowSize.height - canvasSize.height) / 2}
+                  clipWidth={canvasSize.width}
+                  clipHeight={canvasSize.height}>
+                  {background}
+                  {React.Children.toArray(shapes).map((item) => item)}
+                  {newShape}
+                  <Transformer ref={transformerRef} />
+                </Group>
               </Layer>
             </TextEditorContext.Provider>
           </Stage>
