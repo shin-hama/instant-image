@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Image as KonvaImage } from 'react-konva'
 
 import { useShapes } from '../contexts/ShapesProvider'
-import { useWindowSize } from './useWindowSize'
+import { useWindowSize } from 'react-use'
 
 export const useImageLoader = (width: number, height: number) => {
   const [maxWidth, setMaxWidth] = React.useState(width)

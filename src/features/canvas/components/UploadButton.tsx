@@ -2,7 +2,7 @@ import * as React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import Fab from '@mui/material/Fab'
-import { useWindowSize } from 'features/canvas/hooks/useWindowSize'
+import { useWindowSize } from 'react-use'
 import { useImageLoader } from 'features/canvas/hooks/useImageLoader'
 
 const labelId = 'upload-image-button'

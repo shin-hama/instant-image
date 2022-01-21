@@ -1,6 +1,6 @@
-import { useTheme } from '@mui/material/styles'
-import { useWindowSize } from 'features/canvas/hooks/useWindowSize'
 import * as React from 'react'
+
+import { useTheme } from '@mui/material/styles'
 
 type CanvasSize = {
   x: number
@@ -9,9 +9,11 @@ type CanvasSize = {
   height: number
 }
 
-export const useCanvasSize = (): CanvasSize => {
+export const useCanvasSize = (
+  stageWidth: number,
+  stageHeight: number
+): CanvasSize => {
   const theme = useTheme()
-  const windowSize = useWindowSize()
   const [canvasSize, setCanvasSize] = React.useState<CanvasSize>({
     x: 0,
     y: 0,
@@ -24,12 +26,12 @@ export const useCanvasSize = (): CanvasSize => {
     const toolbarHeight = Number.parseInt(
       theme.mixins.toolbar.minHeight?.toString() || '0'
     )
-    const height = (windowSize.height - toolbarHeight) * 0.9
+    const height = (stageHeight - toolbarHeight) * 0.9
     const width = height * widthHeight * 2
-    const x = (windowSize.width - width) / 2
-    const y = (windowSize.height + toolbarHeight - height) / 2
+    const x = (stageWidth - width) / 2
+    const y = (stageHeight - height) / 2
 
-    if (width > windowSize.width) {
+    if (width > stageWidth) {
       console.log('width is over')
     } else {
       setCanvasSize({
@@ -39,7 +41,7 @@ export const useCanvasSize = (): CanvasSize => {
         height,
       })
     }
-  }, [theme, windowSize.height, windowSize.width])
+  }, [stageHeight, stageWidth, theme])
 
   return canvasSize
 }

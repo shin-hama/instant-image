@@ -17,7 +17,7 @@ import { Vector2d } from 'konva/lib/types'
 import TextBlock from './TextBlock'
 import { TextEditorContext } from 'contexts/TextEditorProvider'
 import { StageRef } from 'contexts/StageRefProvider'
-import { useWindowSize } from 'features/canvas/hooks/useWindowSize'
+// import { useWindowSize } from 'features/canvas/hooks/useWindowSize'
 import { useLineConfig } from 'features/config/contexts/LineConfigProvider'
 import { useShapeConfig } from 'features/config/contexts/ShapeConfigProvider'
 import UploadButton from './UploadButton'
@@ -172,7 +172,11 @@ const PasteObject = async (data: string | File) => {
   }
 }
 
-export const Canvas = () => {
+type Props = {
+  width: number
+  height: number
+}
+export const Canvas: React.FC<Props> = ({ width, height }) => {
   const { shapeType } = React.useContext(ShapeTypeContext)
   const [newShape, setNewShape] = React.useState<React.ReactNode>()
   const [start, setStart] = React.useState<Vector2d>({
@@ -191,8 +195,8 @@ export const Canvas = () => {
   const [lineConfig] = useLineConfig()
   const [shapeConfig] = useShapeConfig()
 
-  const windowSize = useWindowSize()
-  const canvasSize = useCanvasSize()
+  // const windowSize = useWindowSize()
+  const canvasSize = useCanvasSize(width, height)
 
   React.useEffect(() => {
     if (pasteData !== undefined) {
@@ -221,7 +225,6 @@ export const Canvas = () => {
   const handleMouseDown = (event: Konva.KonvaEventObject<MouseEvent>) => {
     const pos = event.target.getStage()?.getPointerPosition()
     const { clientX, clientY } = event.evt
-    console.log(background)
     if (pos) {
       startDrawing(pos, { x: clientX, y: clientY })
     }
@@ -295,8 +298,8 @@ export const Canvas = () => {
       y: 0,
     }
     const end = {
-      x: windowSize.width,
-      y: windowSize.height,
+      x: width,
+      y: height,
     }
     const rect = CreateShape(
       'Rect',
@@ -312,12 +315,12 @@ export const Canvas = () => {
     )
 
     const lineStart = {
-      x: windowSize.width / 2,
+      x: width / 2,
       y: 0,
     }
     const lineEnd = {
-      x: windowSize.width / 2,
-      y: windowSize.height,
+      x: width / 2,
+      y: height,
     }
     const centerLine = CreateShape('Line', lineStart, lineEnd, {
       draggable: false,
@@ -330,7 +333,7 @@ export const Canvas = () => {
         {centerLine}
       </Group>
     )
-  }, [windowSize.height, windowSize.width])
+  }, [width, height])
 
   const handleClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
     if (transformerRef.current === null) {
@@ -362,8 +365,8 @@ export const Canvas = () => {
           <Stage
             ref={stageRef}
             preventDefault
-            width={windowSize.width}
-            height={windowSize.height}
+            width={width}
+            height={height}
             onMouseDown={handleMouseDown}
             onTouchStart={handleTouchStart}
             // Prevent to create a small shape on dragging is started when set Shape type is not "select"

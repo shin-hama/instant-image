@@ -12,19 +12,21 @@ const customTheme = createTheme()
 
 function App() {
   return (
-    <ThemeProvider theme={customTheme}>
-      <PasteDataProvider>
-        <StageRefProvider>
-          <TextEditorProvider>
-            <ConfigProvider>
-              <ShapesProvider>
-                <Root />
-              </ShapesProvider>
-            </ConfigProvider>
-          </TextEditorProvider>
-        </StageRefProvider>
-      </PasteDataProvider>
-    </ThemeProvider>
+    <div style={{ height: '100%' }}>
+      <ThemeProvider theme={customTheme}>
+        <PasteDataProvider>
+          <StageRefProvider>
+            <TextEditorProvider>
+              <ConfigProvider>
+                <ShapesProvider>
+                  <Root />
+                </ShapesProvider>
+              </ConfigProvider>
+            </TextEditorProvider>
+          </StageRefProvider>
+        </PasteDataProvider>
+      </ThemeProvider>
+    </div>
   )
 }
 
