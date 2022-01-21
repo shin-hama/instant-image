@@ -17,11 +17,12 @@ import { Vector2d } from 'konva/lib/types'
 import TextBlock from './TextBlock'
 import { TextEditorContext } from 'contexts/TextEditorProvider'
 import { StageRef } from 'contexts/StageRefProvider'
-import { useWindowSize } from '../hooks/useWindowSize'
+import { useWindowSize } from 'features/canvas/hooks/useWindowSize'
 import { useLineConfig } from 'features/config/contexts/LineConfigProvider'
 import { useShapeConfig } from 'features/config/contexts/ShapeConfigProvider'
 import UploadButton from './UploadButton'
 import { useShapes } from '../contexts/ShapesProvider'
+import { useCanvasSize } from 'features/config/hooks/useCanvasSize'
 
 const CreateShape = (
   shape: string,
@@ -191,21 +192,7 @@ export const Canvas = () => {
   const [shapeConfig] = useShapeConfig()
 
   const windowSize = useWindowSize()
-  const [canvasSize, setCanvasSize] = React.useState({ width: 0, height: 0 })
-
-  React.useEffect(() => {
-    const widthHeight = 11 / 21
-    const height = windowSize.height * 0.8
-    const width = height * widthHeight
-    if (width > windowSize.width) {
-      console.log('width is over')
-    } else {
-      setCanvasSize({
-        width,
-        height,
-      })
-    }
-  }, [windowSize.height, windowSize.width])
+  const canvasSize = useCanvasSize()
 
   React.useEffect(() => {
     if (pasteData !== undefined) {
@@ -343,7 +330,7 @@ export const Canvas = () => {
         {centerLine}
       </Group>
     )
-  }, [canvasSize.height, canvasSize.width, windowSize.height, windowSize.width])
+  }, [windowSize.height, windowSize.width])
 
   const handleClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
     if (transformerRef.current === null) {
@@ -390,9 +377,9 @@ export const Canvas = () => {
             <TextEditorContext.Provider value={value}>
               <Layer>
                 <Group
-                  clipX={windowSize.width / 2 - canvasSize.width}
-                  clipY={(windowSize.height - canvasSize.height) / 2}
-                  clipWidth={canvasSize.width * 2}
+                  clipX={canvasSize.x}
+                  clipY={canvasSize.y}
+                  clipWidth={canvasSize.width}
                   clipHeight={canvasSize.height}>
                   {background}
                   {React.Children.toArray(shapes).map((item) => item)}
