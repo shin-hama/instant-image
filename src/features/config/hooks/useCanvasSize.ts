@@ -22,11 +22,12 @@ export const useCanvasSize = (
   })
 
   React.useEffect(() => {
+    console.log(stageWidth)
     const widthHeight = 11 / 21
     const toolbarHeight = Number.parseInt(
       theme.mixins.toolbar.minHeight?.toString() || '0'
     )
-    const height = (stageHeight - toolbarHeight) * 0.9
+    const height = (stageHeight - toolbarHeight) * 0.95
     const width = height * widthHeight * 2
     const x = (stageWidth - width) / 2
     const y = (stageHeight - height) / 2
