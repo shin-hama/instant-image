@@ -48,6 +48,8 @@ export const useImageLoader = (width: number, height: number) => {
         <KonvaImage
           draggable
           image={image}
+          // TODO: Window size ではなく Canvas Size の中央に配置するようにする
+          // Window size の変化に対する依存をへらすため
           x={(windowSize.width - maxWidth) / 2}
           y={(windowSize.height - maxHeight) / 2}
           width={size.width}
