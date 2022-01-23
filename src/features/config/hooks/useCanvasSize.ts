@@ -1,7 +1,5 @@
 import * as React from 'react'
 
-import { useTheme } from '@mui/material/styles'
-
 type CanvasSize = {
   x: number
   y: number
@@ -13,7 +11,6 @@ export const useCanvasSize = (
   stageWidth: number,
   stageHeight: number
 ): CanvasSize => {
-  const theme = useTheme()
   const [canvasSize, setCanvasSize] = React.useState<CanvasSize>({
     x: 0,
     y: 0,
@@ -23,10 +20,7 @@ export const useCanvasSize = (
 
   React.useEffect(() => {
     const widthHeight = 11 / 21
-    const toolbarHeight = Number.parseInt(
-      theme.mixins.toolbar.minHeight?.toString() || '0'
-    )
-    const height = (stageHeight - toolbarHeight) * 0.9
+    const height = stageHeight * 0.95
     const width = height * widthHeight * 2
     const x = (stageWidth - width) / 2
     const y = (stageHeight - height) / 2
@@ -41,7 +35,7 @@ export const useCanvasSize = (
         height,
       })
     }
-  }, [stageHeight, stageWidth, theme])
+  }, [stageHeight, stageWidth])
 
   return canvasSize
 }

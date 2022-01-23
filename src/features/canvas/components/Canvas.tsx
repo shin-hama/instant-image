@@ -325,7 +325,14 @@ export const Canvas: React.FC<Props> = ({ width, height }) => {
     const centerLine = CreateShape('Line', lineStart, lineEnd, {
       draggable: false,
       stroke: 'black',
-      strokeWidth: 1,
+      strokeWidth: 2,
+      lineJoin: 'round',
+      /*
+       * line segments with a length of 33px
+       * with a gap of 10px
+       */
+      dash: [10, 10],
+      opacity: 0.2,
     })
     setBackground(
       <Group>
@@ -359,7 +366,7 @@ export const Canvas: React.FC<Props> = ({ width, height }) => {
   }, [])
 
   return (
-    <>
+    <div style={{ flexGrow: 1 }}>
       <TextEditorContext.Consumer>
         {(value) => (
           <Stage
@@ -395,6 +402,6 @@ export const Canvas: React.FC<Props> = ({ width, height }) => {
         )}
       </TextEditorContext.Consumer>
       <UploadButton />
-    </>
+    </div>
   )
 }
