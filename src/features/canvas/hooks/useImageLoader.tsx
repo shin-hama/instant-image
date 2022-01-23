@@ -2,18 +2,9 @@ import * as React from 'react'
 import { Image as KonvaImage } from 'react-konva'
 
 import { useShapes } from '../contexts/ShapesProvider'
-import { useWindowSize } from 'react-use'
 
-export const useImageLoader = (width: number, height: number) => {
-  const [maxWidth, setMaxWidth] = React.useState(width)
-  const [maxHeight, setMaxHeight] = React.useState(height)
+export const useImageLoader = () => {
   const [, actions] = useShapes()
-  const windowSize = useWindowSize()
-
-  React.useEffect(() => {
-    setMaxWidth(width)
-    setMaxHeight(height)
-  }, [width, height])
 
   const handleLoad = React.useCallback(async (src: string) => {
     return await new Promise<HTMLImageElement>((resolve, reject) => {
@@ -28,11 +19,13 @@ export const useImageLoader = (width: number, height: number) => {
   }, [])
 
   const pushImage = React.useCallback(
-    (image: HTMLImageElement) => {
+    (image: HTMLImageElement, height: number, width: number) => {
       const size = {
         width: image.width,
         height: image.height,
       }
+      const maxHeight = height * 0.6
+      const maxWidth = width * 0.6
       // 最大サイズを超えている場合は、はみ出ないサイズに調整
       if (size.width > maxWidth || size.height > maxHeight) {
         if (size.width > size.height) {
@@ -50,22 +43,22 @@ export const useImageLoader = (width: number, height: number) => {
           image={image}
           // TODO: Window size ではなく Canvas Size の中央に配置するようにする
           // Window size の変化に対する依存をへらすため
-          x={(windowSize.width - maxWidth) / 2}
-          y={(windowSize.height - maxHeight) / 2}
+          x={(width - maxWidth) / 2}
+          y={(height - maxHeight) / 2}
           width={size.width}
           height={size.height}
         />
       )
     },
-    [actions, maxHeight, maxWidth, windowSize.height, windowSize.width]
+    [actions]
   )
 
   const loadImage = React.useCallback(
-    async (file: File) => {
+    async (file: File, height: number, width: number) => {
       const url = URL.createObjectURL(file)
       if (url) {
         const image = await handleLoad(url)
-        pushImage(image)
+        pushImage(image, height, width)
       }
       URL.revokeObjectURL(url)
     },

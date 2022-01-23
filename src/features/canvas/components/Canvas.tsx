@@ -399,7 +399,10 @@ export const Canvas: React.FC<Props> = ({ width, height }) => {
           </Stage>
         )}
       </TextEditorContext.Consumer>
-      <UploadButton />
+      <UploadButton
+        canvasHeight={canvasSize.height}
+        canvasWidth={canvasSize.width}
+      />
     </div>
   )
 }
