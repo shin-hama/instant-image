@@ -17,7 +17,6 @@ import { Vector2d } from 'konva/lib/types'
 import TextBlock from './TextBlock'
 import { TextEditorContext } from 'contexts/TextEditorProvider'
 import { StageRef } from 'contexts/StageRefProvider'
-// import { useWindowSize } from 'features/canvas/hooks/useWindowSize'
 import { useLineConfig } from 'features/config/contexts/LineConfigProvider'
 import { useShapeConfig } from 'features/config/contexts/ShapeConfigProvider'
 import UploadButton from './UploadButton'
@@ -195,7 +194,6 @@ export const Canvas: React.FC<Props> = ({ width, height }) => {
   const [lineConfig] = useLineConfig()
   const [shapeConfig] = useShapeConfig()
 
-  // const windowSize = useWindowSize()
   const canvasSize = useCanvasSize(width, height)
 
   React.useEffect(() => {
@@ -401,7 +399,10 @@ export const Canvas: React.FC<Props> = ({ width, height }) => {
           </Stage>
         )}
       </TextEditorContext.Consumer>
-      <UploadButton />
+      <UploadButton
+        canvasHeight={canvasSize.height}
+        canvasWidth={canvasSize.width}
+      />
     </div>
   )
 }
