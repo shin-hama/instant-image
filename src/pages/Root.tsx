@@ -5,6 +5,7 @@ import Toolbar from '@mui/material/Toolbar'
 import { Canvas } from 'features/canvas/components/Canvas'
 import Navbar from 'features/canvas/components/Navbar'
 import { useWindowSize } from 'react-use'
+import ToolPanel from 'features/canvas/components/ToolPanel'
 
 type ShapeTypeProps = {
   shapeType: string
@@ -67,6 +68,7 @@ const Root = () => {
             <Canvas width={canvasSize.width} height={canvasSize.height} />
           </Box>
         </Box>
+        <ToolPanel></ToolPanel>
       </ShapeTypeContext.Provider>
     </Box>
   )
