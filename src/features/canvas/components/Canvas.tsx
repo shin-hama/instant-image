@@ -11,12 +11,12 @@ import {
 } from 'react-konva'
 import Konva from 'konva'
 
-import { ShapeTypeContext } from 'pages/Root'
 import { PasteData } from 'contexts/PasteDataProvider'
 import { Vector2d } from 'konva/lib/types'
 import TextBlock from './TextBlock'
 import { TextEditorContext } from 'contexts/TextEditorProvider'
 import { StageRef } from 'contexts/StageRefProvider'
+import { ShapeTypeContext } from 'features/canvas/contexts/ShapeTypeProvider'
 import { useLineConfig } from 'features/config/contexts/LineConfigProvider'
 import { useShapeConfig } from 'features/config/contexts/ShapeConfigProvider'
 import UploadButton from './UploadButton'

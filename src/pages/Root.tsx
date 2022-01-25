@@ -7,19 +7,7 @@ import Navbar from 'features/canvas/components/Navbar'
 import { useWindowSize } from 'react-use'
 import ToolPanel from 'features/canvas/components/ToolPanel'
 
-type ShapeTypeProps = {
-  shapeType: string
-  setShapeType: React.Dispatch<React.SetStateAction<string>>
-}
-export const ShapeTypeContext = React.createContext<ShapeTypeProps>({
-  shapeType: 'Line',
-  setShapeType: () => {
-    // no run
-  },
-})
-
 const Root = () => {
-  const [shapeType, setShapeType] = React.useState('Select')
   const [canvasSize, setCanvasSize] = React.useState({ width: 0, height: 0 })
   const canvasBoxRef = React.useRef<HTMLDivElement>(null)
   const windowSize = useWindowSize()
@@ -44,32 +32,30 @@ const Root = () => {
         flex: 1,
         position: 'relative',
       }}>
-      <ShapeTypeContext.Provider value={{ shapeType, setShapeType }}>
-        <Navbar />
-        <Toolbar />
+      <Navbar />
+      <Toolbar />
+      <Box
+        sx={{
+          background: 'grey',
+          height: '100%',
+          width: '100%',
+          position: 'relative',
+          flex: '1 1 0%',
+        }}>
         <Box
+          ref={canvasBoxRef}
+          onCopy={() => console.log('handlePaste')}
+          onPaste={() => console.log('test')}
           sx={{
-            background: 'grey',
+            position: 'absolute',
             height: '100%',
             width: '100%',
-            position: 'relative',
-            flex: '1 1 0%',
+            overflow: 'hidden auto',
           }}>
-          <Box
-            ref={canvasBoxRef}
-            onCopy={() => console.log('handlePaste')}
-            onPaste={() => console.log('test')}
-            sx={{
-              position: 'absolute',
-              height: '100%',
-              width: '100%',
-              overflow: 'hidden auto',
-            }}>
-            <Canvas width={canvasSize.width} height={canvasSize.height} />
-          </Box>
+          <Canvas width={canvasSize.width} height={canvasSize.height} />
         </Box>
-        <ToolPanel></ToolPanel>
-      </ShapeTypeContext.Provider>
+      </Box>
+      <ToolPanel></ToolPanel>
     </Box>
   )
 }
