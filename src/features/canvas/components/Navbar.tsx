@@ -6,16 +6,25 @@ import Toolbar from '@mui/material/Toolbar'
 
 import { StageRef } from 'contexts/StageRefProvider'
 import { useConfigEditor } from 'features/config/contexts/ConfigEditorProvider'
+import { Size } from 'features/config/hooks/useCanvasSize'
 
 const FlexDiv = styled('div')((theme) => ({
   flexGrow: 1,
 }))
 
-const Navbar = () => {
+type Props = {
+  canvasSize: Size
+}
+const Navbar: React.FC<Props> = ({ canvasSize }) => {
   const stageRef = React.useContext(StageRef)
   const handleDownload = () => {
     if (stageRef?.current) {
-      const dataUrl = stageRef.current.toDataURL()
+      const dataUrl = stageRef.current.toDataURL({
+        x: canvasSize.x,
+        y: canvasSize.y,
+        width: canvasSize.width,
+        height: canvasSize.height,
+      })
       const link = document.createElement('a')
       link.download = 'stage.png'
       link.href = dataUrl
