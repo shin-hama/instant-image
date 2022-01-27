@@ -7,6 +7,7 @@ import { TextEditorProvider } from 'contexts/TextEditorProvider'
 import Root from 'pages/Root'
 import { ConfigProvider } from 'features/config/contexts/ConfigProvider'
 import { ShapesProvider } from 'features/canvas/contexts/ShapesProvider'
+import { ShapeTypeProvider } from 'features/canvas/contexts/ShapeTypeProvider'
 
 const customTheme = createTheme()
 
@@ -19,7 +20,9 @@ function App() {
             <TextEditorProvider>
               <ConfigProvider>
                 <ShapesProvider>
-                  <Root />
+                  <ShapeTypeProvider>
+                    <Root />
+                  </ShapeTypeProvider>
                 </ShapesProvider>
               </ConfigProvider>
             </TextEditorProvider>

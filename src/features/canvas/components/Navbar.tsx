@@ -2,29 +2,30 @@ import * as React from 'react'
 import { styled } from '@mui/material'
 import AppBar from '@mui/material/AppBar'
 import Button from '@mui/material/Button'
-import FormControl from '@mui/material/FormControl'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
+import Stack from '@mui/material/Stack'
 import Toolbar from '@mui/material/Toolbar'
 
-import { ShapeTypeContext } from 'pages/Root'
 import { StageRef } from 'contexts/StageRefProvider'
 import { useConfigEditor } from 'features/config/contexts/ConfigEditorProvider'
+import { Size } from 'features/config/hooks/useCanvasSize'
 
 const FlexDiv = styled('div')((theme) => ({
   flexGrow: 1,
 }))
 
-const Navbar = () => {
-  const { shapeType, setShapeType } = React.useContext(ShapeTypeContext)
-  const handleChange = (event: SelectChangeEvent) => {
-    setShapeType(event.target.value)
-  }
+type Props = {
+  canvasSize: Size
+}
+const Navbar: React.FC<Props> = ({ canvasSize }) => {
   const stageRef = React.useContext(StageRef)
   const handleDownload = () => {
     if (stageRef?.current) {
-      const dataUrl = stageRef.current.toDataURL()
+      const dataUrl = stageRef.current.toDataURL({
+        x: canvasSize.x,
+        y: canvasSize.y,
+        width: canvasSize.width,
+        height: canvasSize.height,
+      })
       const link = document.createElement('a')
       link.download = 'stage.png'
       link.href = dataUrl
@@ -34,45 +35,24 @@ const Navbar = () => {
     }
   }
 
-  const setConfigEditor = useConfigEditor()
+  const setOpenConfigEditor = useConfigEditor()
 
-  const handleOpenShapeEditor = () => {
-    setConfigEditor('Shape')
-  }
-
-  const handleOpenLineEditor = () => {
-    setConfigEditor('Line')
+  const handleOpenConfigEditor = () => {
+    setOpenConfigEditor(true)
   }
 
   return (
     <AppBar sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
       <Toolbar>
-        <FormControl>
-          <InputLabel id="shape-select-label">Shape</InputLabel>
-          <Select
-            labelId="shape-select-label"
-            id="shape-select"
-            value={shapeType}
-            label="Shape"
-            onChange={handleChange}>
-            <MenuItem value={'Select'}>Select</MenuItem>
-            <MenuItem value={'Line'}>Line</MenuItem>
-            <MenuItem value={'Free'}>Free Line</MenuItem>
-            <MenuItem value={'Rect'}>Rect</MenuItem>
-            <MenuItem value={'Circle'}>Circle</MenuItem>
-            <MenuItem value={'Text'}>Text</MenuItem>
-          </Select>
-        </FormControl>
         <FlexDiv />
-        <Button variant="contained" onClick={handleOpenLineEditor}>
-          line
-        </Button>
-        <Button variant="contained" onClick={handleOpenShapeEditor}>
-          shape
-        </Button>
-        <Button onClick={handleDownload} variant="contained">
-          Download
-        </Button>
+        <Stack direction="row" spacing={2}>
+          <Button variant="contained" onClick={handleOpenConfigEditor}>
+            config
+          </Button>
+          <Button onClick={handleDownload} variant="contained">
+            Download
+          </Button>
+        </Stack>
       </Toolbar>
     </AppBar>
   )

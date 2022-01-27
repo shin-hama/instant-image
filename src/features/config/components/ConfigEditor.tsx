@@ -5,16 +5,12 @@ import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import Fab from '@mui/material/Fab'
+import Tab from '@mui/material/Tab'
+import Tabs from '@mui/material/Tabs'
 import Toolbar from '@mui/material/Toolbar'
 
 import LineConfigEditor from '../components/LineConfig'
 import ShapeConfigEditor from '../components/ShapeConfig'
-
-const Editors = {
-  Line: <LineConfigEditor />,
-  Shape: <ShapeConfigEditor />,
-}
-export type EditorType = keyof typeof Editors
 
 const TransparentFab = styled(Fab)(({ theme }) => ({
   position: 'absolute',
@@ -30,19 +26,45 @@ const TransparentFab = styled(Fab)(({ theme }) => ({
   },
 }))
 
+type TabPanelProps = {
+  index: number
+  value: number
+}
+const TabPanel: React.FC<TabPanelProps> = ({ children, index, value }) => {
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}>
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
+  )
+}
+
 type Props = {
-  editor?: EditorType
+  open?: boolean
   onClose: () => void
 }
-const ConfigEditor: React.FC<Props> = ({ editor, onClose }) => {
+const ConfigEditor: React.FC<Props> = ({ open, onClose }) => {
+  const [value, setValue] = React.useState(0)
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue)
+  }
+
   return (
-    <Drawer
-      open={Boolean(editor)}
-      anchor="right"
-      variant="persistent"
-      onClose={onClose}>
+    <Drawer open={open} anchor="right" variant="persistent" onClose={onClose}>
       <Toolbar />
-      <Box sx={{ margin: 2 }}>{editor ? Editors[editor] : <></>}</Box>
+      <Tabs value={value} onChange={handleChange}>
+        <Tab label="Line" />
+        <Tab label="Shape" />
+      </Tabs>
+      <TabPanel value={value} index={0}>
+        <LineConfigEditor />
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+        <ShapeConfigEditor />
+      </TabPanel>
       <TransparentFab
         disableRipple
         disableFocusRipple
