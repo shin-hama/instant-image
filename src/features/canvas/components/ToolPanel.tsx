@@ -38,6 +38,7 @@ type Props = {
 const ToolPanel: React.FC<Props> = ({ canvasSize }) => {
   const [openSub, setOpenSub] = React.useState(false)
   const mainPanelRef = React.useRef<HTMLDivElement>(null)
+  const { setShapeType } = React.useContext(ShapeTypeContext)
   const loadImage = useImageLoader()
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,6 +49,11 @@ const ToolPanel: React.FC<Props> = ({ canvasSize }) => {
       })
     }
   }
+
+  const handleTextClicked = () => {
+    setShapeType('Text')
+  }
+
   const handleOpen = () => {
     setOpenSub(true)
   }
@@ -67,7 +73,7 @@ const ToolPanel: React.FC<Props> = ({ canvasSize }) => {
           }}>
           <Stack direction="row" spacing={2}>
             <Button onClick={handleOpen}>Shape</Button>
-            <Button onClick={handleOpen}>Text</Button>
+            <Button onClick={handleTextClicked}>Text</Button>
             <Button component="label">
               <input
                 accept="image/*"

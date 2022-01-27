@@ -175,7 +175,7 @@ type Props = {
 }
 export const Canvas: React.FC<Props> = ({ canvasSize }) => {
   const { stage, canvas } = canvasSize
-  const { shapeType } = React.useContext(ShapeTypeContext)
+  const { shapeType, setShapeType } = React.useContext(ShapeTypeContext)
   const [newShape, setNewShape] = React.useState<React.ReactNode>()
   const [start, setStart] = React.useState<Vector2d>({
     x: 0,
@@ -274,6 +274,7 @@ export const Canvas: React.FC<Props> = ({ canvasSize }) => {
     setNewShape(undefined)
     setFreePoints([])
     setStart({ x: 0, y: 0 })
+    setShapeType('Select')
 
     event.evt.preventDefault()
   }
