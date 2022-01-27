@@ -11,7 +11,10 @@ import {
 import { useImageLoader } from 'features/canvas/hooks/useImageLoader'
 import { Size } from 'features/config/hooks/useCanvasSize'
 
-const ShapePanels = () => {
+type ShapePanelsProps = {
+  handleClose: () => void
+}
+const ShapePanels: React.FC<ShapePanelsProps> = ({ handleClose }) => {
   const { setShapeType } = React.useContext(ShapeTypeContext)
   const handleClick = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -19,6 +22,7 @@ const ShapePanels = () => {
     if (isShape(event.currentTarget.value)) {
       setShapeType(event.currentTarget.value)
     }
+    handleClose()
   }
 
   return (
@@ -32,10 +36,10 @@ const ShapePanels = () => {
   )
 }
 
-type Props = {
+type ToolPanelProps = {
   canvasSize: Size
 }
-const ToolPanel: React.FC<Props> = ({ canvasSize }) => {
+const ToolPanel: React.FC<ToolPanelProps> = ({ canvasSize }) => {
   const [openSub, setOpenSub] = React.useState(false)
   const mainPanelRef = React.useRef<HTMLDivElement>(null)
   const { setShapeType } = React.useContext(ShapeTypeContext)
@@ -88,7 +92,7 @@ const ToolPanel: React.FC<Props> = ({ canvasSize }) => {
         </Box>
       </Box>
       <Drawer open={openSub} onClose={handleClose} anchor="bottom">
-        <ShapePanels />
+        <ShapePanels handleClose={handleClose} />
         <Box sx={{ height: mainPanelRef.current?.clientHeight }}></Box>
       </Drawer>
     </>
