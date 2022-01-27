@@ -1,25 +1,23 @@
 import * as React from 'react'
 
-import ConfigEditor, {
-  EditorType,
-} from 'features/config/components/ConfigEditor'
+import ConfigEditor from 'features/config/components/ConfigEditor'
 
 const ConfigEditorContext = React.createContext<React.Dispatch<
-  React.SetStateAction<EditorType | undefined>
+  React.SetStateAction<boolean>
 > | null>(null)
 
 export const ConfigEditorProvider: React.FC = ({ children }) => {
-  const [configEditor, setConfigEditor] = React.useState<EditorType>()
+  const [open, setOpen] = React.useState(false)
 
   const handleClose = () => {
-    setConfigEditor(undefined)
+    setOpen(false)
   }
   return (
     <>
-      <ConfigEditorContext.Provider value={setConfigEditor}>
+      <ConfigEditorContext.Provider value={setOpen}>
         {children}
       </ConfigEditorContext.Provider>
-      <ConfigEditor editor={configEditor} onClose={handleClose} />
+      <ConfigEditor open={open} onClose={handleClose} />
     </>
   )
 }
