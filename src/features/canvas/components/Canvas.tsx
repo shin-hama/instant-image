@@ -173,8 +173,9 @@ const PasteObject = async (data: string | File) => {
 type Props = {
   stageSize: Size
   canvasSize: Size
+  scale: { x: number; y: number }
 }
-export const Canvas: React.FC<Props> = ({ stageSize, canvasSize }) => {
+export const Canvas: React.FC<Props> = ({ stageSize, canvasSize, scale }) => {
   const { shapeType, setShapeType } = React.useContext(ShapeTypeContext)
   const [newShape, setNewShape] = React.useState<React.ReactNode>()
   const [start, setStart] = React.useState<Vector2d>({
@@ -293,9 +294,11 @@ export const Canvas: React.FC<Props> = ({ stageSize, canvasSize }) => {
       x: 0,
       y: 0,
     }
+    const scaledStageWidth = stageSize.width / scale.x
+    const scaledStageHeight = stageSize.height / scale.y
     const end = {
-      x: stageSize.width,
-      y: stageSize.height,
+      x: scaledStageWidth,
+      y: scaledStageHeight,
     }
     const rect = CreateShape(
       'Rect',
@@ -311,12 +314,12 @@ export const Canvas: React.FC<Props> = ({ stageSize, canvasSize }) => {
     )
 
     const lineStart = {
-      x: stageSize.width / 2,
+      x: scaledStageWidth / 2,
       y: 0,
     }
     const lineEnd = {
-      x: stageSize.width / 2,
-      y: stageSize.height,
+      x: scaledStageWidth / 2,
+      y: scaledStageHeight,
     }
     const centerLine = CreateShape('Line', lineStart, lineEnd, {
       draggable: false,
@@ -336,7 +339,7 @@ export const Canvas: React.FC<Props> = ({ stageSize, canvasSize }) => {
         {centerLine}
       </Group>
     )
-  }, [stageSize.width, stageSize.height])
+  }, [stageSize.width, stageSize.height, scale.x, scale.y])
 
   const handleClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
     if (transformerRef.current === null) {
@@ -360,7 +363,7 @@ export const Canvas: React.FC<Props> = ({ stageSize, canvasSize }) => {
       transformerRef.current.nodes([testRef.current])
     }
   }, [])
-
+  console.log(canvasSize)
   return (
     <div style={{ flexGrow: 1 }}>
       <TextEditorContext.Consumer>
@@ -372,6 +375,8 @@ export const Canvas: React.FC<Props> = ({ stageSize, canvasSize }) => {
             y={stageSize.y}
             width={stageSize.width}
             height={stageSize.height}
+            scaleX={scale.x}
+            scaleY={scale.y}
             onMouseDown={handleMouseDown}
             onTouchStart={handleTouchStart}
             // Prevent to create a small shape on dragging is started when set Shape type is not "select"

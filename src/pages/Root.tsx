@@ -9,7 +9,11 @@ import { useCanvasSize } from 'features/config/hooks/useCanvasSize'
 
 const Root = () => {
   const canvasBoxRef = React.useRef<HTMLDivElement>(null)
-  const { stage: stageSize, canvas: canvasSize } = useCanvasSize(canvasBoxRef)
+  const {
+    stage: stageSize,
+    canvas: canvasSize,
+    scale,
+  } = useCanvasSize(canvasBoxRef)
 
   return (
     <Box
@@ -40,7 +44,7 @@ const Root = () => {
             width: '100%',
             overflow: 'hidden auto',
           }}>
-          <Canvas stageSize={stageSize} canvasSize={canvasSize} />
+          <Canvas stageSize={stageSize} canvasSize={canvasSize} scale={scale} />
         </Box>
       </Box>
       <ToolPanel canvasSize={canvasSize} />
