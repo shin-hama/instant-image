@@ -4,24 +4,12 @@ import Toolbar from '@mui/material/Toolbar'
 
 import { Canvas } from 'features/canvas/components/Canvas'
 import Navbar from 'features/canvas/components/Navbar'
-import { useWindowSize } from 'react-use'
 import ToolPanel from 'features/canvas/components/ToolPanel'
+import { useCanvasSize } from 'features/config/hooks/useCanvasSize'
 
 const Root = () => {
-  const [canvasSize, setCanvasSize] = React.useState({ width: 0, height: 0 })
   const canvasBoxRef = React.useRef<HTMLDivElement>(null)
-  const windowSize = useWindowSize()
-
-  React.useEffect(() => {
-    if (!canvasBoxRef.current) {
-      return
-    }
-
-    setCanvasSize({
-      width: canvasBoxRef.current.clientWidth,
-      height: canvasBoxRef.current.clientHeight,
-    })
-  }, [canvasBoxRef, windowSize.height, windowSize.width])
+  const canvasSize = useCanvasSize(canvasBoxRef)
 
   return (
     <Box
@@ -52,10 +40,10 @@ const Root = () => {
             width: '100%',
             overflow: 'hidden auto',
           }}>
-          <Canvas width={canvasSize.width} height={canvasSize.height} />
+          <Canvas canvasSize={canvasSize} />
         </Box>
       </Box>
-      <ToolPanel></ToolPanel>
+      <ToolPanel canvasSize={canvasSize.canvas} />
     </Box>
   )
 }

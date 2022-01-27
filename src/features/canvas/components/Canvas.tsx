@@ -19,9 +19,8 @@ import { StageRef } from 'contexts/StageRefProvider'
 import { ShapeTypeContext } from 'features/canvas/contexts/ShapeTypeProvider'
 import { useLineConfig } from 'features/config/contexts/LineConfigProvider'
 import { useShapeConfig } from 'features/config/contexts/ShapeConfigProvider'
-import UploadButton from './UploadButton'
 import { useShapes } from '../contexts/ShapesProvider'
-import { useCanvasSize } from 'features/config/hooks/useCanvasSize'
+import { CanvasSize } from 'features/config/hooks/useCanvasSize'
 
 const CreateShape = (
   shape: string,
@@ -172,10 +171,10 @@ const PasteObject = async (data: string | File) => {
 }
 
 type Props = {
-  width: number
-  height: number
+  canvasSize: CanvasSize
 }
-export const Canvas: React.FC<Props> = ({ width, height }) => {
+export const Canvas: React.FC<Props> = ({ canvasSize }) => {
+  const { stage, canvas } = canvasSize
   const { shapeType } = React.useContext(ShapeTypeContext)
   const [newShape, setNewShape] = React.useState<React.ReactNode>()
   const [start, setStart] = React.useState<Vector2d>({
@@ -193,8 +192,6 @@ export const Canvas: React.FC<Props> = ({ width, height }) => {
 
   const [lineConfig] = useLineConfig()
   const [shapeConfig] = useShapeConfig()
-
-  const canvasSize = useCanvasSize(width, height)
 
   React.useEffect(() => {
     if (pasteData !== undefined) {
@@ -296,8 +293,8 @@ export const Canvas: React.FC<Props> = ({ width, height }) => {
       y: 0,
     }
     const end = {
-      x: width,
-      y: height,
+      x: stage.width,
+      y: stage.height,
     }
     const rect = CreateShape(
       'Rect',
@@ -313,12 +310,12 @@ export const Canvas: React.FC<Props> = ({ width, height }) => {
     )
 
     const lineStart = {
-      x: width / 2,
+      x: stage.width / 2,
       y: 0,
     }
     const lineEnd = {
-      x: width / 2,
-      y: height,
+      x: stage.width / 2,
+      y: stage.height,
     }
     const centerLine = CreateShape('Line', lineStart, lineEnd, {
       draggable: false,
@@ -338,7 +335,7 @@ export const Canvas: React.FC<Props> = ({ width, height }) => {
         {centerLine}
       </Group>
     )
-  }, [width, height])
+  }, [stage.width, stage.height])
 
   const handleClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
     if (transformerRef.current === null) {
@@ -370,8 +367,10 @@ export const Canvas: React.FC<Props> = ({ width, height }) => {
           <Stage
             ref={stageRef}
             preventDefault
-            width={width}
-            height={height}
+            x={stage.x}
+            y={stage.y}
+            width={stage.width}
+            height={stage.height}
             onMouseDown={handleMouseDown}
             onTouchStart={handleTouchStart}
             // Prevent to create a small shape on dragging is started when set Shape type is not "select"
@@ -385,10 +384,10 @@ export const Canvas: React.FC<Props> = ({ width, height }) => {
             <TextEditorContext.Provider value={value}>
               <Layer>
                 <Group
-                  clipX={canvasSize.x}
-                  clipY={canvasSize.y}
-                  clipWidth={canvasSize.width}
-                  clipHeight={canvasSize.height}>
+                  clipX={canvas.x}
+                  clipY={canvas.y}
+                  clipWidth={canvas.width}
+                  clipHeight={canvas.height}>
                   {background}
                   {React.Children.toArray(shapes).map((item) => item)}
                   {newShape}
@@ -399,10 +398,6 @@ export const Canvas: React.FC<Props> = ({ width, height }) => {
           </Stage>
         )}
       </TextEditorContext.Consumer>
-      <UploadButton
-        canvasHeight={canvasSize.height}
-        canvasWidth={canvasSize.width}
-      />
     </div>
   )
 }

@@ -8,6 +8,8 @@ import {
   ShapeTypeContext,
   isShape,
 } from '../contexts/ShapeTypeProvider'
+import { useImageLoader } from 'features/canvas/hooks/useImageLoader'
+import { Size } from 'features/config/hooks/useCanvasSize'
 
 const ShapePanels = () => {
   const { setShapeType } = React.useContext(ShapeTypeContext)
@@ -30,10 +32,22 @@ const ShapePanels = () => {
   )
 }
 
-const ToolPanel = () => {
+type Props = {
+  canvasSize: Size
+}
+const ToolPanel: React.FC<Props> = ({ canvasSize }) => {
   const [openSub, setOpenSub] = React.useState(false)
   const mainPanelRef = React.useRef<HTMLDivElement>(null)
+  const loadImage = useImageLoader()
 
+  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || [])
+    if (files.length > 0) {
+      files.forEach((file) => {
+        loadImage(file, canvasSize.height, canvasSize.width)
+      })
+    }
+  }
   const handleOpen = () => {
     setOpenSub(true)
   }
@@ -54,7 +68,16 @@ const ToolPanel = () => {
           <Stack direction="row" spacing={2}>
             <Button onClick={handleOpen}>Shape</Button>
             <Button onClick={handleOpen}>Text</Button>
-            <Button onClick={handleOpen}>Upload</Button>
+            <Button component="label">
+              <input
+                accept="image/*"
+                multiple
+                type="file"
+                style={{ display: 'none' }}
+                onChange={handleUpload}
+              />
+              Upload
+            </Button>
           </Stack>
         </Box>
       </Box>
