@@ -2,12 +2,15 @@ import * as React from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Drawer from '@mui/material/Drawer'
+import Slider from '@mui/material/Slider'
 import Stack from '@mui/material/Stack'
 import {
   Shapes,
   ShapeTypeContext,
   isShape,
 } from '../contexts/ShapeTypeProvider'
+import Typography from '@mui/material/Typography'
+
 import { useImageLoader } from 'features/canvas/hooks/useImageLoader'
 import { Size } from 'features/config/hooks/useCanvasSize'
 
@@ -33,6 +36,25 @@ const ShapePanels: React.FC<ShapePanelsProps> = ({ handleClose }) => {
         </Button>
       ))}
     </Stack>
+  )
+}
+
+const ZoomSlider = () => {
+  const [scale, setScale] = React.useState(50)
+  const handleChange = (event: Event, newValue: number | number[]) => {
+    if (newValue instanceof Array) {
+      return
+    }
+    setScale(newValue)
+  }
+
+  return (
+    <Box sx={{ flexGrow: 1 }}>
+      <Stack direction="row" spacing={2} alignItems="center">
+        <Slider value={scale} onChange={handleChange} />
+        <Typography>{scale}%</Typography>
+      </Stack>
+    </Box>
   )
 }
 
@@ -69,13 +91,18 @@ const ToolPanel: React.FC<ToolPanelProps> = ({ canvasSize }) => {
     <>
       <Box
         ref={mainPanelRef}
-        sx={{ width: '100vw', zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+        sx={{
+          width: '100vw',
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+        }}>
         <Box
           sx={{
             width: '100%',
+            pt: 0.4,
+            pb: 0.4,
             overflow: 'auto',
           }}>
-          <Stack direction="row" spacing={2}>
+          <Stack direction="row" spacing={2} alignItems="center">
             <Button onClick={handleOpen}>Shape</Button>
             <Button onClick={handleTextClicked}>Text</Button>
             <Button component="label">
@@ -88,6 +115,9 @@ const ToolPanel: React.FC<ToolPanelProps> = ({ canvasSize }) => {
               />
               Upload
             </Button>
+            <Box sx={{ width: '30%' }}>
+              <ZoomSlider />
+            </Box>
           </Stack>
         </Box>
       </Box>

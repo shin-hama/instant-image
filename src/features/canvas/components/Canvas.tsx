@@ -363,7 +363,7 @@ export const Canvas: React.FC<Props> = ({ stageSize, canvasSize, scale }) => {
       transformerRef.current.nodes([testRef.current])
     }
   }, [])
-  console.log(canvasSize)
+  
   return (
     <div style={{ flexGrow: 1 }}>
       <TextEditorContext.Consumer>
