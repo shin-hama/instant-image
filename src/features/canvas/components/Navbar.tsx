@@ -7,14 +7,14 @@ import Toolbar from '@mui/material/Toolbar'
 
 import { StageRef } from 'contexts/StageRefProvider'
 import { useConfigEditor } from 'features/config/contexts/ConfigEditorProvider'
-import { Size } from 'features/config/hooks/useCanvasSize'
+import { CanvasSize } from 'features/config/hooks/useCanvasSize'
 
 const FlexDiv = styled('div')((theme) => ({
   flexGrow: 1,
 }))
 
 type Props = {
-  canvasSize: Size
+  canvasSize: CanvasSize
 }
 const Navbar: React.FC<Props> = ({ canvasSize }) => {
   const stageRef = React.useContext(StageRef)

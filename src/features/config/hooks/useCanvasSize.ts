@@ -1,6 +1,54 @@
 import * as React from 'react'
 
 import { useWindowSize } from 'react-use'
+import { Vector2d } from 'konva/lib/types'
+
+type Size = {
+  height: number
+  width: number
+}
+type Scale = {
+  scaleX: number
+  scaleY: number
+}
+export type CanvasSize = Size & Vector2d & Scale
+export type StageSize = Size & Vector2d
+
+const initSize = () => ({
+  height: 0,
+  width: 0,
+  x: 0,
+  y: 0,
+})
+const initScale = () => ({
+  scaleX: 1,
+  scaleY: 1,
+})
+
+export const useStageSize = (container: React.RefObject<HTMLDivElement>) => {
+  const [stageSize, setStageSize] = React.useState<StageSize>({
+    ...initSize(),
+  })
+  const windowSize = useWindowSize()
+
+  React.useEffect(() => {
+    if (!container.current) {
+      return
+    }
+    const stageWidth = container.current.clientWidth
+    const stageHeight = container?.current.clientHeight
+
+    // Stage のサイズは Scale に依存せず、画面サイズに一致するようにする
+    setStageSize({
+      height: stageHeight,
+      width: stageWidth,
+      x: 0,
+      y: 0,
+    })
+  }, [container, setStageSize, windowSize.height, windowSize.width])
+
+  return stageSize
+}
 
 const MARGIN_MAG = 0.9
 const DPI = 300
@@ -10,81 +58,49 @@ const MM_PER_INCH = 25.4 // mm/inch
 const WIDTH = (DPI * REAL_WIDTH) / MM_PER_INCH
 const HEIGHT = (DPI * REAL_HEIGHT) / MM_PER_INCH
 
-export type Size = {
-  height: number
-  width: number
-  x: number
-  y: number
+export interface UseCanvasSize {
+  readonly size: CanvasSize
+  updateScale: (newScale: Scale) => void
 }
-export type CanvasSize = {
-  stage: Size
-  canvas: Size
-  scale: {
-    x: number
-    y: number
-  }
-}
-
-export const useCanvasSize = (
-  container: React.RefObject<HTMLDivElement>
-): CanvasSize => {
-  const windowSize = useWindowSize()
-
+export const useCanvasSize = (stage: StageSize): UseCanvasSize => {
   const [canvasSize, setCanvasSize] = React.useState<CanvasSize>({
-    stage: {
-      height: 0,
-      width: 0,
-      x: 0,
-      y: 0,
-    },
-    canvas: {
-      height: 0,
-      width: 0,
-      x: 0,
-      y: 0,
-    },
-    scale: {
-      x: 1,
-      y: 1,
-    },
+    ...initSize(),
+    ...initScale(),
   })
 
   React.useEffect(() => {
-    if (!container.current) {
-      return
-    }
-    const stageWidth = container.current.clientWidth
-    const stageHeight = container?.current.clientHeight
-
     const widthHeight = REAL_WIDTH / REAL_HEIGHT
-    let displayWidth = stageWidth * MARGIN_MAG
+    let displayWidth = stage.width * MARGIN_MAG
     let displayHeight = displayWidth / widthHeight
-    if (displayHeight > stageHeight * MARGIN_MAG) {
-      displayHeight = stageHeight * MARGIN_MAG
+    // 高さが Stage の高さに収まらない場合は、高さが収まるように幅を調整する
+    if (displayHeight > stage.height * MARGIN_MAG) {
+      displayHeight = stage.height * MARGIN_MAG
       displayWidth = displayHeight * widthHeight
     }
 
     const scale = {
-      x: displayWidth / WIDTH,
-      y: displayHeight / HEIGHT,
+      x: displayWidth > 0 ? displayWidth / WIDTH : 0.01,
+      y: displayHeight > 0 ? displayHeight / HEIGHT : 0.01,
     }
 
-    // Stage のサイズは Scale に依存せず、画面サイズに一致するようにする
-    const stage: Size = {
-      height: stageHeight,
-      width: stageWidth,
-      x: 0,
-      y: 0,
-    }
-    // Canvas 内のサイズは Scale パラメータで調整されるので印刷時のサイズを使う
-    const canvas: Size = {
+    // Canvas のサイズは Scale パラメータで調整されるので印刷用のサイズを使う
+    setCanvasSize({
       height: HEIGHT,
       width: WIDTH,
-      x: (stageWidth - displayWidth) / 2 / scale.x,
-      y: (stageHeight - displayHeight) / 2 / scale.y,
-    }
-    setCanvasSize({ stage, canvas, scale })
-  }, [container, windowSize.height, windowSize.width])
+      x: (stage.width - displayWidth) / 2 / scale.x,
+      y: (stage.height - displayHeight) / 2 / scale.y,
+      scaleX: scale.x,
+      scaleY: scale.y,
+    })
+  }, [stage.height, stage.width])
 
-  return canvasSize
+  const updateScale = React.useCallback((newScale: Scale) => {
+    console.log('update: ' + newScale.scaleX)
+    setCanvasSize((prev) => ({
+      ...prev,
+      ...newScale,
+    }))
+  }, [])
+
+  return { size: canvasSize, updateScale }
 }

@@ -12,7 +12,7 @@ import {
 import Typography from '@mui/material/Typography'
 
 import { useImageLoader } from 'features/canvas/hooks/useImageLoader'
-import { Size } from 'features/config/hooks/useCanvasSize'
+import { UseCanvasSize } from 'features/config/hooks/useCanvasSize'
 
 type ShapePanelsProps = {
   handleClose: () => void
@@ -39,19 +39,30 @@ const ShapePanels: React.FC<ShapePanelsProps> = ({ handleClose }) => {
   )
 }
 
-const ZoomSlider = () => {
-  const [scale, setScale] = React.useState(50)
+type ZoomSliderProps = {
+  canvasSize: UseCanvasSize
+}
+const ZoomSlider: React.FC<ZoomSliderProps> = ({
+  canvasSize: { size, updateScale },
+}) => {
+  const scale = Math.round(size.scaleX * 100)
+
+  React.useEffect(() => {
+    console.log(scale)
+    updateScale({ scaleX: scale / 100, scaleY: scale / 100 })
+  }, [updateScale, scale])
+
   const handleChange = (event: Event, newValue: number | number[]) => {
     if (newValue instanceof Array) {
       return
     }
-    setScale(newValue)
+    updateScale({ scaleX: newValue / 100, scaleY: newValue / 100 })
   }
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Stack direction="row" spacing={2} alignItems="center">
-        <Slider value={scale} onChange={handleChange} />
+        <Slider value={scale} onChange={handleChange} min={1} max={100} />
         <Typography>{scale}%</Typography>
       </Stack>
     </Box>
@@ -59,7 +70,7 @@ const ZoomSlider = () => {
 }
 
 type ToolPanelProps = {
-  canvasSize: Size
+  canvasSize: UseCanvasSize
 }
 const ToolPanel: React.FC<ToolPanelProps> = ({ canvasSize }) => {
   const [openSub, setOpenSub] = React.useState(false)
@@ -71,7 +82,7 @@ const ToolPanel: React.FC<ToolPanelProps> = ({ canvasSize }) => {
     const files = Array.from(e.target.files || [])
     if (files.length > 0) {
       files.forEach((file) => {
-        loadImage(file, canvasSize.height, canvasSize.width)
+        loadImage(file, canvasSize.size.height, canvasSize.size.width)
       })
     }
   }
@@ -116,7 +127,7 @@ const ToolPanel: React.FC<ToolPanelProps> = ({ canvasSize }) => {
               Upload
             </Button>
             <Box sx={{ width: '30%' }}>
-              <ZoomSlider />
+              <ZoomSlider canvasSize={canvasSize} />
             </Box>
           </Stack>
         </Box>

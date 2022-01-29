@@ -20,7 +20,7 @@ import { ShapeTypeContext } from 'features/canvas/contexts/ShapeTypeProvider'
 import { useLineConfig } from 'features/config/contexts/LineConfigProvider'
 import { useShapeConfig } from 'features/config/contexts/ShapeConfigProvider'
 import { useShapes } from '../contexts/ShapesProvider'
-import { Size } from 'features/config/hooks/useCanvasSize'
+import { CanvasSize, StageSize } from 'features/config/hooks/useCanvasSize'
 
 const CreateShape = (
   shape: string,
@@ -171,11 +171,10 @@ const PasteObject = async (data: string | File) => {
 }
 
 type Props = {
-  stageSize: Size
-  canvasSize: Size
-  scale: { x: number; y: number }
+  stageSize: StageSize
+  canvasSize: CanvasSize
 }
-export const Canvas: React.FC<Props> = ({ stageSize, canvasSize, scale }) => {
+export const Canvas: React.FC<Props> = ({ stageSize, canvasSize }) => {
   const { shapeType, setShapeType } = React.useContext(ShapeTypeContext)
   const [newShape, setNewShape] = React.useState<React.ReactNode>()
   const [start, setStart] = React.useState<Vector2d>({
@@ -294,8 +293,9 @@ export const Canvas: React.FC<Props> = ({ stageSize, canvasSize, scale }) => {
       x: 0,
       y: 0,
     }
-    const scaledStageWidth = stageSize.width / scale.x
-    const scaledStageHeight = stageSize.height / scale.y
+    const scaledStageWidth = stageSize.width / canvasSize.scaleX
+    const scaledStageHeight = stageSize.height / canvasSize.scaleY
+
     const end = {
       x: scaledStageWidth,
       y: scaledStageHeight,
@@ -339,7 +339,7 @@ export const Canvas: React.FC<Props> = ({ stageSize, canvasSize, scale }) => {
         {centerLine}
       </Group>
     )
-  }, [stageSize.width, stageSize.height, scale.x, scale.y])
+  }, [stageSize.width, stageSize.height, canvasSize.scaleX, canvasSize.scaleY])
 
   const handleClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
     if (transformerRef.current === null) {
@@ -363,7 +363,8 @@ export const Canvas: React.FC<Props> = ({ stageSize, canvasSize, scale }) => {
       transformerRef.current.nodes([testRef.current])
     }
   }, [])
-  
+
+  console.log(canvasSize)
   return (
     <div style={{ flexGrow: 1 }}>
       <TextEditorContext.Consumer>
@@ -375,8 +376,8 @@ export const Canvas: React.FC<Props> = ({ stageSize, canvasSize, scale }) => {
             y={stageSize.y}
             width={stageSize.width}
             height={stageSize.height}
-            scaleX={scale.x}
-            scaleY={scale.y}
+            scaleX={canvasSize.scaleX}
+            scaleY={canvasSize.scaleY}
             onMouseDown={handleMouseDown}
             onTouchStart={handleTouchStart}
             // Prevent to create a small shape on dragging is started when set Shape type is not "select"

@@ -5,15 +5,15 @@ import Toolbar from '@mui/material/Toolbar'
 import { Canvas } from 'features/canvas/components/Canvas'
 import Navbar from 'features/canvas/components/Navbar'
 import ToolPanel from 'features/canvas/components/ToolPanel'
-import { useCanvasSize } from 'features/config/hooks/useCanvasSize'
+import {
+  useCanvasSize,
+  useStageSize,
+} from 'features/config/hooks/useCanvasSize'
 
 const Root = () => {
   const canvasBoxRef = React.useRef<HTMLDivElement>(null)
-  const {
-    stage: stageSize,
-    canvas: canvasSize,
-    scale,
-  } = useCanvasSize(canvasBoxRef)
+  const stageSize = useStageSize(canvasBoxRef)
+  const canvasSize = useCanvasSize(stageSize)
 
   return (
     <Box
@@ -24,7 +24,7 @@ const Root = () => {
         flex: 1,
         position: 'relative',
       }}>
-      <Navbar canvasSize={canvasSize} />
+      <Navbar canvasSize={canvasSize.size} />
       <Toolbar />
       <Box
         sx={{
@@ -44,7 +44,7 @@ const Root = () => {
             width: '100%',
             overflow: 'hidden auto',
           }}>
-          <Canvas stageSize={stageSize} canvasSize={canvasSize} scale={scale} />
+          <Canvas stageSize={stageSize} canvasSize={canvasSize.size} />
         </Box>
       </Box>
       <ToolPanel canvasSize={canvasSize} />
